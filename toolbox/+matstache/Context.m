@@ -20,17 +20,30 @@ classdef Context < handle
             ctx.Stack(end) = [];
         end
 
-        function val = lookup(context, name)
-            val = missing;
-            for i=numel(context):-1:1
-                curr = context.Stack{i};
-                if isstruct(curr) && isfield(curr, name)
-                    val = curr.(name);
+        function val = lookup(context, key)
+            if strcmp(key, ".")
+                val = context.Stack{end};
+                return;
+            end
+
+            ctx = context;
+            part = key.split(".");
+            for k = part(:)'
+                for i=numel(ctx.Stack):-1:1
+                    curr = ctx.Stack{i};
+                    [tf, val] = getKey(curr, k);
+                    if tf
+                        ctx = matstache.Context(val);
+                        break;
+                    end
+                end
+
+                if ~matstache.internal.isTruthy(val)
+                    % Failed context lookups should default to empty strings
+                    % Falsey values also default to empty
+                    val = "";
                     break;
                 end
-            end
-            if ismissing(val)
-                error('Field "%s" not found in the context.', name);
             end
         end
 
@@ -38,4 +51,14 @@ classdef Context < handle
             val = context{end};
         end
     end
+end
+
+function [tf, val] = getKey(data, key)
+tf = false;
+if isstruct(data) && isfield(data, key)
+    val = data.(key);
+    tf = true;
+else
+    val = [];
+end
 end

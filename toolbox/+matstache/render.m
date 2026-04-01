@@ -1,7 +1,7 @@
-function out = render(template, context)
+function out = render(template, hash)
 arguments (Input)
     template (1,1) string
-    context (1,1) struct
+    hash
 end
 arguments (Output)
     out (1,1) string
@@ -11,7 +11,7 @@ import matstache.*;
 lexer = Lexer();
 parser = Parser();
 renderer = Renderer();
-ctx = Context(context);
+ctx = Context(hash);
 
 tokens = lexer.tokenize(template);
 ast = parser.parse(tokens);
