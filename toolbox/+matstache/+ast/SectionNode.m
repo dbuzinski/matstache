@@ -5,7 +5,7 @@ classdef SectionNode < matstache.ast.Node
 
     methods
         function node = SectionNode(name)
-            node.Name = name;
+            node.Name = strip(name);
         end
 
         function out = render(node, context)
@@ -13,7 +13,9 @@ classdef SectionNode < matstache.ast.Node
             if ~matstache.internal.isTruthy(stackContext)
                 out = "";
             else
-                context.push(stackContext);
+                % create context with stack data on top for use in the
+                % section
+                context = context.push(stackContext);
                 sectionText = "";
                 for child = node.Children
                     % For iterators, render call is vectorized.
@@ -23,7 +25,6 @@ classdef SectionNode < matstache.ast.Node
                     sectionText = sectionText + render(child, context);
                 end
                 out = strjoin(sectionText, "");
-                context.pop();
             end
         end
     end

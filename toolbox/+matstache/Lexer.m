@@ -1,11 +1,11 @@
 classdef Lexer < handle
-    % properties (Access=private)
-    properties
+    properties (Access=private)
         Template (1,:) char = '';
-        Tokens (1,:) matstache.Token = matstache.Token.empty();
+        Token matstache.Token {mustBeScalarOrEmpty} = matstache.Token.empty();
         ValueBuffer (1,:) char = '';
         InTag (1,1) logical = false;
         InTriple (1,1) logical = false;
+        InSetDelimiters (1,1) logical = false;
         Sigil (1,:) char = ''
         StartLine (1,1) int64 = 1;
         StartColumn (1,1) int64 = 1;
@@ -19,134 +19,174 @@ classdef Lexer < handle
     properties (Constant)
         DefaultLeftDelimiter = '{{';
         DefaultRightDelimiter = '}}';
-        SupportedSigils = {'!', '&', '#', '/'};
+        SupportedSigils = {'!', '&', '#', '/' '=', '^', '>'};
     end
 
     methods
-        function tokens = tokenize(tokenizer, template)
+        function token = nextToken(lexer)
+            if isempty(lexer.Template)
+                token = matstache.Token.empty();
+                return;
+            end
+            while isempty(lexer.Token)
+                lexer.walk();
+            end
+            token = lexer.Token;
+            lexer.Token = matstache.Token.empty();
+        end
+
+        function setTemplate(lexer, template)
+            lexer.Template = template;
+        end
+
+        function tokens = tokenize(lexer, template)
             arguments
-                tokenizer (1,1) matstache.Lexer
+                lexer (1,1) matstache.Lexer
                 template {mustBeTextScalar}
             end
-            tokenizer.reset();
-            tokenizer.Template = template; 
-            while ~isempty(tokenizer.Template)
-                tokenizer.walk();
+            tokens = matstache.Token.empty();
+            lexer.reset();
+            lexer.Template = template;
+            token = lexer.nextToken();
+            while ~isempty(token)
+                tokens(end+1) = token;
+                token = lexer.nextToken();
             end
-            if ~isempty(tokenizer.ValueBuffer)
-                tokenizer.Tokens(end+1) = tokenizer.createToken();
-            end
-            tokens = tokenizer.Tokens;
+        end
+
+        function reset(lexer)
+            lexer.Template = '';
+            lexer.Token = matstache.Token.empty();
+            lexer.ValueBuffer = '';
+            lexer.InTag = false;
+            lexer.InTriple = false;
+            lexer.InSetDelimiters = false;
+            lexer.Sigil = '';
+            lexer.LeftDelimiter = lexer.DefaultLeftDelimiter;
+            lexer.RightDelimiter = lexer.DefaultRightDelimiter;
+            lexer.StartLine = 1;
+            lexer.StartColumn = 1;
+            lexer.CurrentLine = 1;
+            lexer.CurrentColumn = 1;
         end
     end
 
     methods (Access=private)
-        function walk(tokenizer)
-            defaultDelimiters = strcmp(tokenizer.LeftDelimiter, tokenizer.DefaultLeftDelimiter) && ...
-                    strcmp(tokenizer.RightDelimiter, tokenizer.DefaultRightDelimiter);
+        function walk(lexer)
+            if isempty(lexer.Template)
+                lexer.Token = lexer.createToken();
+                return;
+            end
 
-            if tokenizer.InTag
-                if tokenizer.InTriple && defaultDelimiters
+            % Boolean to track if delimiters are defaults
+            % Needed because we do not support triple mustache if
+            % delimiters are changed
+            defaultDelimiters = strcmp(lexer.LeftDelimiter, lexer.DefaultLeftDelimiter) && ...
+                    strcmp(lexer.RightDelimiter, lexer.DefaultRightDelimiter);
+
+            if lexer.InTag
+                if lexer.InTriple && defaultDelimiters
                     delimiter = '}}}';
                     colOffset = 3;
+                elseif lexer.InSetDelimiters
+                    delimiter = '=}}';
+                    colOffset = 3;
                 else
-                    delimiter = tokenizer.RightDelimiter;
-                    colOffset = 2;
+                    delimiter = lexer.RightDelimiter;
+                    colOffset = length(delimiter);
                 end
             else
-                delimiter = tokenizer.LeftDelimiter;
+                delimiter = lexer.LeftDelimiter;
                 colOffset = 0;
             end
 
-            if startsWith(tokenizer.Template, '{{{') && defaultDelimiters
+            if ~lexer.InTag && startsWith(lexer.Template, '{{{') && defaultDelimiters
                 % Create token for text in tag
-                tokenizer.Tokens(end+1) = tokenizer.createToken();
+                lexer.Token = lexer.createToken();
 
-                tokenizer.StartLine = tokenizer.CurrentLine;
-                tokenizer.StartColumn = tokenizer.CurrentColumn;
+                lexer.StartLine = lexer.CurrentLine;
+                lexer.StartColumn = lexer.CurrentColumn;
 
                 % Advance past delimiter
-                tokenizer.Template(1:3) = [];
-                tokenizer.CurrentColumn = tokenizer.CurrentColumn + 3;
+                lexer.Template(1:3) = [];
+                lexer.CurrentColumn = lexer.CurrentColumn + 3;
 
                 % if we were in a tag, now we're not (and visa versa)
-                tokenizer.InTriple = true;
-                tokenizer.InTag = true;
-                tokenizer.Sigil = '{';
-            elseif startsWith(tokenizer.Template, delimiter)
+                lexer.InTriple = true;
+                lexer.InTag = true;
+                lexer.Sigil = '{';
+            elseif startsWith(lexer.Template, delimiter)
                 delimiterLen = length(delimiter);
 
-                % Create token for text in tag
-                tokenizer.Tokens(end+1) = tokenizer.createToken();
-
-                tokenizer.StartLine = tokenizer.CurrentLine;
-                tokenizer.StartColumn = tokenizer.CurrentColumn + colOffset;
+                % Create token if value buffer is non-empty
+                if ~isempty(lexer.ValueBuffer)
+                    lexer.Token = lexer.createToken();
+                end
+                
+                lexer.StartLine = lexer.CurrentLine;
+                lexer.StartColumn = lexer.CurrentColumn + colOffset;
 
                 % Advance past delimiter
-                tokenizer.Template(1:delimiterLen) = [];
-                tokenizer.CurrentColumn = tokenizer.CurrentColumn + delimiterLen;
+                lexer.Template(1:delimiterLen) = [];
+                lexer.CurrentColumn = lexer.CurrentColumn + delimiterLen;
 
                 % if we were in a tag, now we're not (and visa versa)
-                tokenizer.InTag = ~tokenizer.InTag;
-                if tokenizer.InTriple
-                    tokenizer.InTriple = false;
+                lexer.InTag = ~lexer.InTag;
+                if lexer.InTriple
+                    lexer.InTriple = false;
                 end
                 % Set sigil for new tag
-                if tokenizer.InTag
-                    if startsWith(tokenizer.Template, tokenizer.SupportedSigils)
-                        tokenizer.Sigil = tokenizer.Template(1);
-                        tokenizer.Template(1) = [];
-                        tokenizer.CurrentColumn = tokenizer.CurrentColumn + 1;
+                if lexer.InTag
+                    if startsWith(lexer.Template, lexer.SupportedSigils)
+                        lexer.Sigil = lexer.Template(1);
+                        lexer.Template(1) = [];
+                        lexer.CurrentColumn = lexer.CurrentColumn + 1;
+                        if lexer.Sigil == '='
+                            lexer.InSetDelimiters = true;
+                        end
                     else
-                        tokenizer.Sigil = '';
+                        lexer.Sigil = '';
                     end
                 else
-                    tokenizer.Sigil = '';
+                    lexer.Sigil = '';
                 end
             else
-                c = tokenizer.Template(1);
-                tokenizer.ValueBuffer(end+1) = tokenizer.Template(1);
-                tokenizer.CurrentColumn = tokenizer.CurrentColumn + 1;
-                tokenizer.Template(1) = [];
+                % Tokenizing regular char (not delimiter or sigil)
+                c = lexer.Template(1);
+                lexer.ValueBuffer(end+1) = lexer.Template(1);
+                lexer.CurrentColumn = lexer.CurrentColumn + 1;
+                lexer.Template(1) = [];
                 if c == newline
-                    if ~tokenizer.InTag
-                        tokenizer.Tokens(end+1) = tokenizer.createToken();
-                        tokenizer.CurrentLine = tokenizer.CurrentLine + 1;
-                        tokenizer.CurrentColumn = 1;
-                        tokenizer.StartLine = tokenizer.CurrentLine;
-                        tokenizer.StartColumn = tokenizer.CurrentColumn;
+                    if ~lexer.InTag
+                        % Split text tokens on newlines
+                        lexer.Token = lexer.createToken();
+                        % Update line & column cursors
+                        lexer.CurrentLine = lexer.CurrentLine + 1;
+                        lexer.CurrentColumn = 1;
+                        lexer.StartLine = lexer.CurrentLine;
+                        lexer.StartColumn = lexer.CurrentColumn;
                     else
-                        tokenizer.CurrentLine = tokenizer.CurrentLine + 1;
-                        tokenizer.CurrentColumn = 1;
+                        % No new line, walk one column
+                        lexer.CurrentLine = lexer.CurrentLine + 1;
+                        lexer.CurrentColumn = 1;
                     end
                 end
             end
         end
 
-        function reset(tokenizer)
-            tokenizer.Template = '';
-            tokenizer.Tokens = matstache.Token.empty();
-            tokenizer.ValueBuffer = '';
-            tokenizer.InTag = false;
-            tokenizer.Sigil = '';
-            tokenizer.LeftDelimiter = '{{';
-            tokenizer.RightDelimiter = '}}';
-            tokenizer.StartLine = 1;
-            tokenizer.StartColumn = 1;
-            tokenizer.CurrentLine = 1;
-            tokenizer.CurrentColumn = 1;
-        end
-
-        function token = createToken(tokenizer)
-            if ~tokenizer.InTag && ~tokenizer.InTriple
-                token = matstache.Token(tokenizer.ValueBuffer, "Text", ...
-                    tokenizer.StartLine, tokenizer.CurrentLine, ...
-                    tokenizer.StartColumn, tokenizer.CurrentColumn - 1);
-                tokenizer.ValueBuffer = [];
-                return
+        function token = createToken(lexer)
+            if ~lexer.InTag && ~lexer.InTriple
+                token = matstache.Token(lexer.ValueBuffer, "Text", ...
+                    lexer.StartLine, lexer.CurrentLine, ...
+                    lexer.StartColumn, lexer.CurrentColumn - 1);
+                lexer.ValueBuffer = '';
+                return;
             end
 
-            switch tokenizer.Sigil
+            % Add one to end column for final unprocessed delimiter char and
+            % one more if in a triple mustache
+            colOffset = length(lexer.RightDelimiter) - 1 + int64(lexer.InTriple);
+            switch lexer.Sigil
                 case '!'
                     tokenType = "Comment";
                 case '&'
@@ -157,14 +197,30 @@ classdef Lexer < handle
                     tokenType = "SectionStart";
                 case '/'
                     tokenType = "SectionEnd";
+                case '^'
+                    tokenType = "InvertedStart";
+                case '>'
+                    tokenType = "Partial";
+                case '='
+                    tokenType = "SetDelimiters";
+                    lexer.InSetDelimiters = false;
+                    colOffset = colOffset + 1;
+                    newDelimiters = split(strip(lexer.ValueBuffer));
+                    if length(newDelimiters) ~= 2
+                        error("matstache:InvalidDelimiters", "Set delimiter tag content must be any two non-whitespace sequences, separated by whitespace.");
+                    elseif any(strcmp(newDelimiters, '='))
+                        error("matstache:DelimiterCannotBeEqualSign", "Delimiters cannot be set to an equals sign.")
+                    end
+                    lexer.LeftDelimiter = newDelimiters{1};
+                    lexer.RightDelimiter = newDelimiters{2};
                 otherwise
                     tokenType = "Variable";
             end
 
-            token = matstache.Token(tokenizer.ValueBuffer, tokenType, ...
-                tokenizer.StartLine, tokenizer.CurrentLine, ...
-                tokenizer.StartColumn, tokenizer.CurrentColumn + 1);
-            tokenizer.ValueBuffer = [];
+            token = matstache.Token(lexer.ValueBuffer, tokenType, ...
+                lexer.StartLine, lexer.CurrentLine, ...
+                lexer.StartColumn, lexer.CurrentColumn + colOffset);
+            lexer.ValueBuffer = '';
         end
     end
 end

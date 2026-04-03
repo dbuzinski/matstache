@@ -1,15 +1,15 @@
-classdef Context < handle
+classdef Context
     properties (Access=private)
         Stack = {};
     end
 
     methods
-        function ctx = Context(s)
-            ctx.Stack{1} = s;
+        function ctx = Context(data)
+            ctx.Stack{1} = data;
         end
 
-        function push(ctx, s)
-            ctx.Stack{end+1} = s;
+        function ctx = push(ctx, data)
+            ctx.Stack{end+1} = data;
         end
 
         function s = pop(ctx)
@@ -55,10 +55,10 @@ end
 
 function [tf, val] = getKey(data, key)
 tf = false;
+val = [];
 if isstruct(data) && isfield(data, key)
     val = data.(key);
+    val = val(:)';
     tf = true;
-else
-    val = [];
 end
 end

@@ -5,6 +5,9 @@ classdef TokenType
         UnescapedVariable
         SectionStart
         SectionEnd
+        InvertedStart
+        Partial
+        SetDelimiters
         Comment
     end
 end
