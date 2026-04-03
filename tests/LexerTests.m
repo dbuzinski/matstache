@@ -194,6 +194,14 @@ classdef LexerTests < matlab.unittest.TestCase
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);
         end
+
+        function tokenizesEmptyTagsAsText(testCase)
+            lexer = matstache.Lexer();
+            rawText = 'There is {{}} an empty tag';
+            expected = Token("There is {{}} an empty tag", "Text", 1, 1, 1, 26);
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
     end
 end
 
