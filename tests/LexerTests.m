@@ -9,7 +9,7 @@ classdef LexerTests < matlab.unittest.TestCase
 
         function autoConvertsStrings(testCase)
             lexer = matstache.Lexer();
-            rawText = 'Hello World!';
+            rawText = "Hello World!";
             expected = Token("Hello World!", "Text", 1, 1, 1, 12);
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);
@@ -185,7 +185,14 @@ classdef LexerTests < matlab.unittest.TestCase
             expected = Token(" var ", "Variable", 1, 1, 1, 9);
             actual = lexer.nextToken();
             testCase.verifyEqual(expected, actual);
+        end
 
+        function tokenizesUnfinishedTagsAsText(testCase)
+            lexer = matstache.Lexer();
+            rawText = '{{!';
+            expected = Token("{{!", "Text", 1, 1, 1, 3);
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
         end
     end
 end
