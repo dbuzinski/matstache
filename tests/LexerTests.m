@@ -195,10 +195,33 @@ classdef LexerTests < matlab.unittest.TestCase
             testCase.verifyEqual(expected, actual);
         end
 
-        function tokenizesEmptyTagsAsText(testCase)
+        function tokenizesEmptyTagsAsVariables(testCase)
             lexer = matstache.Lexer();
             rawText = 'There is {{}} an empty tag';
-            expected = Token("There is {{}} an empty tag", "Text", 1, 1, 1, 26);
+            expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
+                Token("", "Variable", 1, 1, 10, 13), ...
+                Token(" an empty tag", "Text", 1, 1, 14, 26) ...
+            ];
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
+        function tokenizesSectionEmptyTags(testCase)
+            lexer = matstache.Lexer();
+            rawText = 'There is {{#}} an empty tag';
+            expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
+                Token("", "SectionStart", 1, 1, 10, 14), ...
+                Token(" an empty tag", "Text", 1, 1, 15, 27) ...
+            ];
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
+        function tokenizesEmptyTagsWithWhiteSpaceAsVariables(testCase)
+            lexer = matstache.Lexer();
+            rawText = 'There is {{ }} an empty tag';
+            expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
+                Token(" ", "Variable", 1, 1, 10, 14), ...
+                Token(" an empty tag", "Text", 1, 1, 15, 27) ...
+            ];
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);
         end
