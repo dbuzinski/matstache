@@ -61,7 +61,20 @@ classdef Renderer
                 out = "";
                 return
             end
-            partialTemplate = partials.(node.Content);
+            partialTemplate = string(partials.(node.Content));
+            % add indentations
+            if node.IsStandalone
+                partialTemplate = splitlines(partialTemplate);
+                indentation = string(repmat(' ', 1, node.StartColumn - 1));
+                offset = 0;
+                % don't append to the last element if it is a trailing
+                % newline
+                if strlength(partialTemplate(end)) == 0
+                    offset = -1;
+                end
+                partialTemplate(1:end+offset) = indentation + partialTemplate(1:end+offset);
+                partialTemplate = join(partialTemplate, newline);
+            end
             out = matstache.render(partialTemplate, context, partials);
         end
     end

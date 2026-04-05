@@ -6,10 +6,8 @@ classdef Parser
             % Create root now
             % Set it as the current root
             % Create empty stack
-            ast = Node("Root", "");
-            current.Node = ast;
-            current.StartLine = 0;
-            current.StartColumn = 0;
+            ast = Node("Root", "", 0, 0, 0, 0);
+            current = ast;
             stack = {current};
             % First pass to find standalone whitespace
             standaloneMask = findStandaloneWhiteSpace(tokens);
@@ -19,47 +17,44 @@ classdef Parser
                 switch token.TokenType
                     case matstache.TokenType.Text
                         if ~standaloneMask(i)
-                            current.Node.Children(end+1) = Node("Text", token.Content);
+                            current.Children(end+1) = Node("Text", token.Content, token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
                         end
                     case matstache.TokenType.Variable
                         varName = validateVarName(token);
-                        current.Node.Children(end+1) = Node("Variable", varName);
+                        current.Children(end+1) = Node("Variable", varName, token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
                     case matstache.TokenType.UnescapedVariable
                         varName = validateVarName(token);
-                        current.Node.Children(end+1) = Node("UnescapedVariable", varName);
+                        current.Children(end+1) = Node("UnescapedVariable", varName,  token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
                     case matstache.TokenType.SectionStart
                         varName = validateVarName(token);
-                        stackNode = Node("Section", varName);
+                        stackNode = Node("Section", varName, token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
                         % Add stack to current children
-                        current.Node.Children(end+1) = stackNode;
+                        current.Children(end+1) = stackNode;
                         % Set stack node to current
-                        current.Node = stackNode;
-                        current.StartLine = token.StartLine;
-                        current.StartColumn = token.StartColumn;
+                        current = stackNode;
                         stack{end+1} = current;
                     case matstache.TokenType.SectionEnd
                         varName = validateVarName(token);
-                        if ~(isequal(current.Node.NodeType, matstache.NodeType.Section) ...
-                                || isequal(current.Node.NodeType, matstache.NodeType.InvertedSection))
+                        if ~(isequal(current.NodeType, matstache.NodeType.Section) ...
+                                || isequal(current.NodeType, matstache.NodeType.InvertedSection))
                             error("matstache:UnexpectedSectionClose", "Unexpected section close ''%s'' (line %d, column %d)", varName, token.StartLine, token.StartColumn);
-                        elseif ~strcmp(current.Node.Content, varName)
-                            error("matstache:MismatchedSections", "Found mismatched section close ''%s'' for currently open section ''%s'' (line %d, column %d)", varName, current.Node.Content, token.StartLine, token.StartColumn);
+                        elseif ~strcmp(current.Content, varName)
+                            error("matstache:MismatchedSections", "Found mismatched section close ''%s'' for currently open section ''%s'' (line %d, column %d)", varName, current.Content, token.StartLine, token.StartColumn);
                         end
                         stack(end) = [];
                         current = stack{end};
                     case matstache.TokenType.InvertedStart
                         varName = validateVarName(token);
-                        stackNode = Node("InvertedSection", varName);
+                        stackNode = Node("InvertedSection", varName,  token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
                         % Add stack to current children
-                        current.Node.Children(end+1) = stackNode;
+                        current.Children(end+1) = stackNode;
                         % Set stack node to current
-                        current.Node = stackNode;
-                        current.StartLine = token.StartLine;
-                        current.StartColumn = token.StartColumn;
+                        current = stackNode;
                         stack{end+1} = current;
                     case matstache.TokenType.Partial
                         varName = validateVarName(token);
-                        current.Node.Children(end+1) = Node("Partial", varName);
+                        isStandalone = standaloneMask(i);
+                        current.Children(end+1) = Node("Partial", varName,  token.StartLine, token.EndLine, token.StartColumn, token.EndColumn, isStandalone);
                     case matstache.TokenType.SetDelimiters
                         % Skip delimiter changes
                     case matstache.TokenType.Comment
