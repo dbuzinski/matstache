@@ -6,8 +6,12 @@ classdef SpecTests < matlab.unittest.TestCase
 
     properties (ClassSetupParameter)
         specFiles = { ...
-            'testdata/spec/specs/comments.json'} %, ...
-            % 'testdata/spec/specs/interpolation.json'};
+            'testdata/spec/specs/comments.json', ...
+            'testdata/spec/specs/delimiters.json', ...
+            'testdata/spec/specs/interpolation.json', ...
+            'testdata/spec/specs/inverted.json', ...
+            'testdata/spec/specs/partials.json', ...
+            'testdata/spec/specs/sections.json'};
     end
 
     methods (TestClassSetup)
@@ -28,7 +32,14 @@ classdef SpecTests < matlab.unittest.TestCase
 
     methods (Test)
         function validateRequirement(testCase, specTests)
-            out = matstache.render(specTests.template, specTests.data);
+            if iscell(specTests)
+                specTests = specTests{1};
+            end
+            args = {specTests.template, specTests.data};
+            if isfield(specTests, "partials")
+                args{end+1} = specTests.partials;
+            end
+            out = matstache.render(args{:});
             testCase.verifyEqual(out, string(specTests.expected));
         end
     end
