@@ -12,23 +12,27 @@ classdef Context
             ctx.Stack{end+1} = data;
         end
 
-        function s = pop(ctx)
+        function [ctx, s] = pop(ctx)
             if isempty(ctx.Stack)
-                error('Stack is empty. Cannot pop.');
+                error("mustache:PopEmptyContext", "Unable to pop from an empty context");
             end
             s = ctx.Stack{end};
             ctx.Stack(end) = [];
         end
 
         function val = lookup(context, key)
+            % Return top of stack for .
             if strcmp(key, ".")
                 val = context.Stack{end};
                 return;
             end
 
+            % Split on keys
             ctx = context;
             part = key.split(".");
             for k = part(:)'
+                % Walk the stack backwards to check for a hit
+                % Return on first hit
                 for i=numel(ctx.Stack):-1:1
                     curr = ctx.Stack{i};
                     [tf, val] = getKey(curr, k);
@@ -45,10 +49,6 @@ classdef Context
                     break;
                 end
             end
-        end
-
-        function val = current(context)
-            val = context{end};
         end
     end
 end
