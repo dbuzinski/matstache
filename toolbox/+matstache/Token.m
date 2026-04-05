@@ -6,6 +6,7 @@ classdef Token
         EndLine (1,1) int64
         StartColumn (1,1) int64
         EndColumn (1,1) int64
+        ContainsNewLine (1,1) logical
     end
 
     methods

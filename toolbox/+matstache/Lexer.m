@@ -83,7 +83,8 @@ classdef Lexer < handle
     methods (Access=private)
         function walk(lexer)
             if lexer.Position > lexer.TemplateLength
-                lexer.Token = matstache.Token(lexer.Template(lexer.StartPosition:lexer.Position-1), "Text", ...
+                content = lexer.Template(lexer.StartPosition:lexer.Position-1);
+                lexer.Token = matstache.Token(content, "Text", ...
                     lexer.StartLine, lexer.CurrentLine, ...
                     lexer.StartColumn, lexer.CurrentColumn - 1);
                 return;
