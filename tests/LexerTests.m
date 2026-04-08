@@ -1,14 +1,14 @@
 classdef LexerTests < matlab.unittest.TestCase
     methods (Test)
         function tokenizesEmpty(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = '';
             tokens = lexer.tokenize(rawText);
             testCase.verifyEmpty(tokens);
         end
 
         function autoConvertsStrings(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = "Hello World!";
             expected = Token("Hello World!", "Text", 1, 1, 1, 12);
             actual = lexer.tokenize(rawText);
@@ -16,7 +16,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesText(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello World!';
             expected = Token("Hello World!", "Text", 1, 1, 1, 12);
             actual = lexer.tokenize(rawText);
@@ -24,7 +24,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function TokenizesComments(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello {{! Lovely! }}World';
             expected = [Token("Hello ", "Text", 1, 1, 1, 6), ...
                 Token(" Lovely! ", "Comment", 1, 1, 7, 20), ...
@@ -34,7 +34,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesVariables(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello {{ subject }}!';
             expected = [Token("Hello ", "Text", 1, 1, 1, 6), ...
                 Token(" subject ", "Variable", 1, 1, 7, 19), ...
@@ -44,7 +44,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tracksNewlines(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = ['Hello ' newline ' World{{! Comment '  newline '  }}!'];
             expected = [Token(['Hello ' newline], "Text", 1, 1, 1, 7), ...
                 Token(" World", "Text", 2, 2, 1, 6), ...
@@ -55,7 +55,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesSections(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello {{#person}}{{name}}{{/person}}';
             expected = [Token('Hello ', "Text", 1, 1, 1, 6), ...
                 Token("person", "SectionStart", 1, 1, 7, 17), ...
@@ -67,7 +67,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesTripleMustache(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello {{{ name }}}';
             expected = [Token("Hello ", "Text", 1, 1, 1, 6), ...
                 Token(" name ", "UnescapedVariable", 1, 1, 7, 18)];
@@ -76,7 +76,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesUnescapedVariables(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello {{& name }}';
             expected = [Token("Hello ", "Text", 1, 1, 1, 6), ...
                 Token(" name ", "UnescapedVariable", 1, 1, 7, 17)];
@@ -85,7 +85,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function allowsSettingDelimiters(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = ['[ {{include}} ]' newline '{{= | | =}}' newline '[ |include| ]'];
             expected = [Token("[ ", "Text", 1, 1, 1, 2), ...
                 Token("include", "Variable", 1, 1, 3, 13), ...
@@ -101,7 +101,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesPartials(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = '{{> partial}}';
             expected = [Token(" partial", "Partial", 1, 1, 1, 13)];
             actual = lexer.tokenize(rawText);
@@ -109,7 +109,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesInvertedSections(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = '{{^boolean}}This should be rendered.{{/boolean}}';
             expected = [Token("boolean", "InvertedStart", 1, 1, 1, 12), ...
                 Token("This should be rendered.", "Text", 1, 1, 13, 36), ...
@@ -119,7 +119,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function errorsOnMalformedSetDelimiterTag(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             % 0 delimiters
             rawText = '{{=   =}}';
             testCase.verifyError(@() lexer.tokenize(rawText), ...
@@ -135,7 +135,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function delimitersCannotBeSetToEqualSign(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             % Left
             rawText = '{{= = | =}}';
             testCase.verifyError(@() lexer.tokenize(rawText), ...
@@ -151,7 +151,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function nextTokenReturnsNextToken(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'Hello {{! Lovely! }}{{ name }}';
             lexer.setTemplate(rawText);
 
@@ -169,7 +169,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function resetCleansState(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = ['Oh no! {{= | | =}} ' newline '{{! Dirty State! }}{{ bad }}'];
             lexer.setTemplate(rawText);
             lexer.nextToken();
@@ -188,7 +188,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesUnfinishedTagsAsText(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = '{{!';
             expected = Token("{{!", "Text", 1, 1, 1, 3);
             actual = lexer.tokenize(rawText);
@@ -196,7 +196,7 @@ classdef LexerTests < matlab.unittest.TestCase
         end
 
         function tokenizesEmptyTagsAsVariables(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'There is {{}} an empty tag';
             expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
                 Token("", "Variable", 1, 1, 10, 13), ...
@@ -206,7 +206,7 @@ classdef LexerTests < matlab.unittest.TestCase
             testCase.verifyEqual(expected, actual);
         end
         function tokenizesSectionEmptyTags(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'There is {{#}} an empty tag';
             expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
                 Token("", "SectionStart", 1, 1, 10, 14), ...
@@ -216,7 +216,7 @@ classdef LexerTests < matlab.unittest.TestCase
             testCase.verifyEqual(expected, actual);
         end
         function tokenizesEmptyTagsWithWhiteSpaceAsVariables(testCase)
-            lexer = matstache.Lexer();
+            lexer = matstache.internal.Lexer();
             rawText = 'There is {{ }} an empty tag';
             expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
                 Token(" ", "Variable", 1, 1, 10, 14), ...
@@ -229,5 +229,5 @@ classdef LexerTests < matlab.unittest.TestCase
 end
 
 function token = Token(varargin)
-token = matstache.Token(varargin{:});
+token = matstache.internal.Token(varargin{:});
 end

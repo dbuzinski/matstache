@@ -1,62 +1,95 @@
 classdef Renderer
+    properties
+        Parser
+    end
+
     methods
-        function out = render(renderer, ast, context, partials)
-            out = "";
-            for node = ast
-                switch node.NodeType
-                    case matstache.NodeType.Root
-                        for child = node.Children
-                            out = out + render(renderer, child, context, partials);
-                        end
-                    case matstache.NodeType.Text
-                        out = out + node.Content;
-                    case matstache.NodeType.Variable
-                        out = out + renderer.renderVariableNode(node, context, true);
-                    case matstache.NodeType.UnescapedVariable
-                        out = out + renderer.renderVariableNode(node, context, false);
-                    case matstache.NodeType.Section
-                        out = out + renderer.renderSectionNode(node, context, false, partials);
-                    case matstache.NodeType.InvertedSection
-                        out = out + renderer.renderSectionNode(node, context, true, partials);
-                    case matstache.NodeType.Partial
-                        out = out + renderer.renderPartialNode(node, context, partials);
-                end
+        function r = Renderer(parser)
+            arguments
+                parser (1,1) matstache.internal.Parser = matstache.internal.Parser(matstache.internal.Lexer)
             end
+            r.Parser = parser;
+        end
+
+        function out = render(renderer, template, context, partials)
+            arguments (Input)
+                renderer (1,1) matstache.Renderer
+                template (1,1) string
+                context (1,1) matstache.Context
+                partials (1,1) struct = struct()
+            end
+            arguments (Output)
+                out (1,1) string
+            end
+            ast = renderer.Parser.parse(template);
+            contextStack = matstache.internal.ContextStack(context);
+            out = renderer.renderAST(ast, contextStack, partials);
         end
     end
 
     methods (Access=private)
-        function out = renderVariableNode(~, node, context, escaped)
+        function out = renderAST(renderer, ast, contextStack, partials)
             out = "";
-            data = context.lookup(node.Content);
-            data = sanitize(data);
-            for i = 1:numel(data)
-                if escaped
-                    out = out + replace(string(data{i}), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
-                else
-                    out = out + data{i};
-                end
-            end
-        end
-        
-        function out = renderSectionNode(renderer, node, context, inverted, partials)
-            out = "";
-            data = context.lookup(node.Content);
-            data = sanitize(data);
-            isTruthy = ~isscalar(data) || matstache.internal.isTruthy(data{1});
-            if (isTruthy && ~inverted) ...
-                    || (~isTruthy && inverted)
-                for i = 1:numel(data)
-                    context = context.push(data{i});
-                    for child = node.Children
-                        out = out + render(renderer, child, context, partials);
-                    end
-                    context = context.pop();
+            for node = ast
+                switch node.NodeType
+                    case matstache.internal.NodeType.Root
+                        for child = node.Children
+                            out = out + renderAST(renderer, child, contextStack, partials);
+                        end
+                    case matstache.internal.NodeType.Text
+                        out = out + node.Content;
+                    case matstache.internal.NodeType.Variable
+                        out = out + renderer.renderVariableNode(node, contextStack, true);
+                    case matstache.internal.NodeType.UnescapedVariable
+                        out = out + renderer.renderVariableNode(node, contextStack, false);
+                    case matstache.internal.NodeType.Section
+                        out = out + renderer.renderSectionNode(node, contextStack, false, partials);
+                    case matstache.internal.NodeType.InvertedSection
+                        out = out + renderer.renderSectionNode(node, contextStack, true, partials);
+                    case matstache.internal.NodeType.Partial
+                        out = out + renderer.renderPartialNode(node, contextStack, partials);
                 end
             end
         end
 
-        function out = renderPartialNode(~, node, context, partials)
+        function out = renderVariableNode(~, node, contextStack, escaped)
+            out = "";
+            res = contextStack.lookup(node.Content);
+            if escaped
+                nodeOutput = cellfun(@escapedString, res.iter());
+            else
+                nodeOutput = cellfun(@string, res.iter());
+            end
+            if ~isempty(nodeOutput)
+                out = out + string(nodeOutput).join("");
+            end
+        end
+        
+        function out = renderSectionNode(renderer, node, contextStack, inverted, partials)
+            out = "";
+            res = contextStack.lookup(node.Content);
+            isTruthy = res.isTruthy();
+            if isTruthy && ~inverted
+                it = res.iter();
+                for data = it(:)'
+                    out = out + renderChildren(renderer, node.Children, data{1}, contextStack, partials);
+                end
+            elseif ~isTruthy && inverted
+                for child = node.Children
+                    out = out + renderAST(renderer, child, contextStack, partials);
+                end
+            end
+        end
+
+        function out = renderChildren(renderer, children, data, contextStack, partials)
+            out = "";
+            contextStack = contextStack.push(data);
+            for child = children
+                out = out + renderAST(renderer, child, contextStack, partials);
+            end
+        end
+
+        function out = renderPartialNode(renderer, node, contextStack, partials)
             if ~isfield(partials, node.Content)
                 out = "";
                 return
@@ -75,20 +108,12 @@ classdef Renderer
                 partialTemplate(1:end+offset) = indentation + partialTemplate(1:end+offset);
                 partialTemplate = join(partialTemplate, newline);
             end
-            out = matstache.render(partialTemplate, context, partials);
+            [~, ctx] = contextStack.pop();
+            out = renderer.render(partialTemplate, ctx, partials);
         end
     end
 end
 
-function data = sanitize(data)
-    % Sanitize data
-    if ischar(data)
-        data = {string(data)};
-    % Convert arrays to cell arrays
-    elseif ~iscell(data)
-        data = num2cell(data);
-    % Convert cellstrs to cells of strings
-    elseif iscellstr(data)
-        data = num2cell(string(data));
-    end
+function out = escapedString(s)
+out = replace(string(s), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
 end
