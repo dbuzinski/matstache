@@ -1,7 +1,7 @@
 classdef Token
     properties
         Content (1,1) string
-        TokenType matstache.TokenType {mustBeScalarOrEmpty}
+        TokenType matstache.internal.TokenType {mustBeScalarOrEmpty}
         StartLine (1,1) int64
         EndLine (1,1) int64
         StartColumn (1,1) int64

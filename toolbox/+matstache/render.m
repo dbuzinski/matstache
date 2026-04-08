@@ -7,13 +7,6 @@ end
 arguments (Output)
     out (1,1) string
 end
-import matstache.*;
-
-lexer = Lexer();
-parser = Parser();
-renderer = Renderer();
-contextStack = matstache.internal.ContextStack(context);
-tokens = lexer.tokenize(template);
-ast = parser.parse(tokens);
-out = renderer.render(ast, contextStack, partials);
+renderer = matstache.Renderer;
+out = renderer.render(template, context, partials);
 end

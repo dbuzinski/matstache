@@ -33,19 +33,40 @@ classdef ContextStack
 
             % Split on keys
             part = key.split(".");
-            for k = part(:)'
-                % Walk the stack backwards to check for a hit
-                % Return on first hit
-                for i=numel(stack.Stack):-1:1
-                    curr = stack.Stack(i);
-                    [tf, val] = lookup(curr, k);
-                    if tf
-                        stack = matstache.internal.ContextStack(val);
-                        break;
-                    end
+            % Walk the stack backwards to check for a hit
+            % Return on first hit
+            start = part(1);
+            for i=numel(stack.Stack):-1:1
+                curr = stack.Stack(i);
+                [tf, val] = lookup(curr, start);
+                if tf
+                    curr = [matstache.Context.empty val];
+                    break;
                 end
-                res = matstache.internal.ContextResult(tf, val);
             end
+
+            % Return if we didn't get a hit or found an empty context
+            if ~tf
+                res = matstache.internal.ContextResult(false, []);
+                return;
+            end
+
+            % Now find remaining parts of the key in that context
+            remaining = part(2:end);
+            for k = remaining(:)'
+                if isempty(curr)
+                    break;
+                end
+                % Look up in that context until we've resolved all parts or
+                % get a miss
+                [tf, val] = lookup(curr, k);
+                if tf
+                    curr = [matstache.Context.empty val];
+                else
+                    break;
+                end
+            end
+            res = matstache.internal.ContextResult(tf, val);
         end
     end
 end
