@@ -1,64 +1,25 @@
-classdef Context
-    properties (Access=private)
-        Stack = {};
+classdef Context < matlab.mixin.Heterogeneous
+    methods (Sealed)
+        function [tf, val] = lookup(ctx, key)
+            [tf, val] = lookupElement(ctx, key);
+        end
     end
 
-    methods
-        function ctx = Context(data)
-            ctx.Stack{1} = data;
-        end
-
-        function ctx = push(ctx, data)
-            ctx.Stack{end+1} = data;
-        end
-
-        function [ctx, s] = pop(ctx)
-            if isempty(ctx.Stack)
-                error("mustache:PopEmptyContext", "Unable to pop from an empty context");
-            end
-            s = ctx.Stack{end};
-            ctx.Stack(end) = [];
-        end
-
-        function val = lookup(context, key)
-            % Return top of stack for .
-            if strcmp(key, ".")
-                val = context.Stack{end};
-                return;
-            end
-
-            % Split on keys
-            ctx = context;
-            part = key.split(".");
-            for k = part(:)'
-                % Walk the stack backwards to check for a hit
-                % Return on first hit
-                for i=numel(ctx.Stack):-1:1
-                    curr = ctx.Stack{i};
-                    [tf, val] = getKey(curr, k);
-                    if tf
-                        ctx = matstache.Context(val);
-                        break;
-                    end
-                end
-
-                if ~matstache.internal.isTruthy(val)
-                    % Failed context lookups should default to empty strings
-                    % Falsey values also default to empty
-                    val = "";
-                    break;
-                end
+    methods (Access=protected)
+        function [tf, val] = lookupElement(ctx, key)
+            if isprop(ctx, key) || ismethod(ctx, key)
+                tf = true;
+                val = ctx.(key);
+            else
+                tf = false;
+                val = [];
             end
         end
     end
-end
 
-function [tf, val] = getKey(data, key)
-tf = false;
-val = [];
-if isstruct(data) && isfield(data, key)
-    val = data.(key);
-    val = val(:)';
-    tf = true;
-end
+    methods (Static, Sealed, Access = protected)
+        function cobj = convertObject(Context, obj)
+            cobj = matstache.internal.JsonContext(obj);
+        end
+    end
 end
