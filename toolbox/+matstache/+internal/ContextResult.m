@@ -29,10 +29,7 @@ classdef ContextResult
 
         function it = iter(res)
             data = res.Data;
-            if iscolumn(data)
-                data = data';
-            end
-            if ischar(data)
+            if ischar(data) || iscellstr(data)
                 data = string(data);
             end
             if ~iscell(data)

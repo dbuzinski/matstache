@@ -29,12 +29,13 @@ classdef Renderer
         function out = renderVariableNode(~, node, contextStack, escaped)
             out = "";
             res = contextStack.lookup(node.Content);
-            for data = res.iter()
-                if escaped
-                    out = out + replace(string(data), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
-                else
-                    out = out + string(data);
-                end
+            if escaped
+                nodeOutput = cellfun(@escapedString, res.iter());
+            else
+                nodeOutput = cellfun(@string, res.iter());
+            end
+            if ~isempty(nodeOutput)
+                out = out + string(nodeOutput).join("");
             end
         end
         
@@ -42,18 +43,18 @@ classdef Renderer
             out = "";
             res = contextStack.lookup(node.Content);
             isTruthy = res.isTruthy();
-            if (isTruthy && ~inverted) ...
-                    || (~isTruthy && inverted)
+            if isTruthy && ~inverted
                 it = res.iter();
-                if isempty(it)
-                        it = {[]};
-                end                    
-                for data = it
+                for data = it(:)'
                     contextStack = contextStack.push(data{1});
                     for child = node.Children
                         out = out + render(renderer, child, contextStack, partials);
                     end
                     contextStack = contextStack.pop();
+                end
+            elseif ~isTruthy && inverted
+                for child = node.Children
+                    out = out + render(renderer, child, contextStack, partials);
                 end
             end
         end
@@ -81,4 +82,8 @@ classdef Renderer
             out = matstache.render(partialTemplate, ctx, partials);
         end
     end
+end
+
+function out = escapedString(s)
+out = replace(string(s), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
 end
