@@ -1,6 +1,6 @@
 classdef Parser < handle
     properties
-        TemplateCache (1, 1) dictionary = dictionary(string([]), matstache.internal.Node.empty)
+        TemplateCache (1, 1) dictionary = dictionary(string([]), cell([]))
         Lexer (1,1) matstache.internal.Lexer
     end
 
@@ -10,11 +10,11 @@ classdef Parser < handle
         end
 
         function ast = parse(parser, template)
-            import matstache.internal.Node;
+            import matstache.internal.Token;
 
             % Use cached AST if available
             if isKey(parser.TemplateCache, template)
-                ast = parser.TemplateCache.lookup(template);
+                ast = parser.TemplateCache{template};
                 return;
             end
             % Tokenize template
@@ -23,9 +23,8 @@ classdef Parser < handle
             % Create root now
             % Set it as the current root
             % Create empty stack
-            ast = Node("Root", "", 0, 0, 0, 0);
-            current = ast;
-            stack = {current};
+            current = Token.empty();
+            stack = {};
             % First pass to find standalone whitespace
             standaloneMask = findStandaloneWhiteSpace(tokens);
 
@@ -34,57 +33,58 @@ classdef Parser < handle
                 switch token.TokenType
                     case matstache.internal.TokenType.Text
                         if ~standaloneMask(i)
-                            current.Children(end+1) = Node("Text", token.Content, token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
+                            current(end+1) = token;
                         end
                     case matstache.internal.TokenType.Variable
-                        varName = validateVarName(token);
-                        current.Children(end+1) = Node("Variable", varName, token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
+                        token.Content = makeValid(token.Content);
+                        current(end+1) = token;
                     case matstache.internal.TokenType.UnescapedVariable
-                        varName = validateVarName(token);
-                        current.Children(end+1) = Node("UnescapedVariable", varName,  token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
+                        token.Content = makeValid(token.Content);
+                        current(end+1) = token;
                     case matstache.internal.TokenType.SectionStart
-                        varName = validateVarName(token);
-                        stackNode = Node("Section", varName, token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
-                        % Add stack to current children
-                        current.Children(end+1) = stackNode;
-                        % Set stack node to current
-                        current = stackNode;
+                        % Push current to end of stack
+                        token.Content = makeValid(token.Content);
+                        current(end+1) = token;
                         stack{end+1} = current;
+                        % Set stack node as new current
+                        current = Token.empty();
                     case matstache.internal.TokenType.SectionEnd
-                        varName = validateVarName(token);
-                        if ~(isequal(current.NodeType, matstache.internal.NodeType.Section) ...
-                                || isequal(current.NodeType, matstache.internal.NodeType.InvertedSection))
-                            error("matstache:UnexpectedSectionClose", "Unexpected section close ''%s'' (line %d, column %d)", varName, token.StartLine, token.StartColumn);
-                        elseif ~strcmp(current.Content, varName)
-                            error("matstache:MismatchedSections", "Found mismatched section close ''%s'' for currently open section ''%s'' (line %d, column %d)", varName, current.Content, token.StartLine, token.StartColumn);
+                        name = makeValid(token.Content);
+                        if isempty(stack)
+                            error("matstache:UnexpectedSectionClose", "Unexpected section close ''%s'' (line %d, column %d)", name, token.StartLine, token.StartColumn);
                         end
-                        stack(end) = [];
+                        children = current;
                         current = stack{end};
+                        current(end).Children = children;
+                        stack(end) = [];
+                        if ~strcmp(current(end).Content, name)
+                            error("matstache:MismatchedSections", "Found mismatched section close ''%s'' for currently open section ''%s'' (line %d, column %d)", name, current.Content, token.StartLine, token.StartColumn);
+                        end
                     case matstache.internal.TokenType.InvertedStart
-                        varName = validateVarName(token);
-                        stackNode = Node("InvertedSection", varName,  token.StartLine, token.EndLine, token.StartColumn, token.EndColumn);
-                        % Add stack to current children
-                        current.Children(end+1) = stackNode;
-                        % Set stack node to current
-                        current = stackNode;
+                        % Push current to end of stack
+                        token.Content = makeValid(token.Content);
+                        current(end+1) = token;
                         stack{end+1} = current;
+                        % Set stack node as new current
+                        current = Token.empty();
                     case matstache.internal.TokenType.Partial
-                        varName = validateVarName(token);
-                        isStandalone = standaloneMask(i);
-                        current.Children(end+1) = Node("Partial", varName,  token.StartLine, token.EndLine, token.StartColumn, token.EndColumn, isStandalone);
+                        token.Content = makeValid(token.Content);
+                        token.IsStandalone = standaloneMask(i);
+                        current(end+1) = token;
                     case matstache.internal.TokenType.SetDelimiters
                         % Skip delimiter changes
                     case matstache.internal.TokenType.Comment
                         % Skip comments
                 end
             end
-            % Only root node should be left in the stack
-            if ~isscalar(stack)
+            % Stack should be empty after parsing, or there's an unclosed section
+            if ~isempty(stack)
                 unclosed = stack{end};
-                error("matstache:UnclosedSection", "No closing tag found for section ''%s'' (line %d, column %d)", unclosed.Node.Content, unclosed.StartLine, unclosed.StartColumn);
+                error("matstache:UnclosedSection", "No closing tag found for section ''%s'' (line %d, column %d)", unclosed.Content, unclosed.StartLine, unclosed.StartColumn);
             end
+            ast = current;
             % Store result in cache
-            parser.TemplateCache(template) = ast;
+            parser.TemplateCache(template) = {ast};
         end
     end
 end
@@ -116,13 +116,18 @@ for i = 1:tokens(end).EndLine
 end
 end
 
-function name = validateVarName(token)
-name = strip(token.Content);
-if isequal(name, ".")
+function name = makeValid(content)
+name = strip(content);
+if name == "."
     return;
 end
-isValid = all(arrayfun(@isvarname,name.split(".")));
-if ~isValid
+try
+    if ~contains(name, ".")
+        name = matlab.lang.makeValidName(name);
+    else
+        name = join(arrayfun(@matlab.lang.makeValidName, name.split(".")), ".");
+    end
+catch
     msg = "Invalid variable name ''%s'' (line %d, column %d)";
     error("matstache:InvalidVariableName", msg, name, token.StartLine, token.StartColumn);
 end

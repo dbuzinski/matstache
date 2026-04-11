@@ -31,22 +31,18 @@ classdef Renderer
         function out = renderAST(renderer, ast, contextStack, partials)
             out = "";
             for node = ast
-                switch node.NodeType
-                    case matstache.internal.NodeType.Root
-                        for child = node.Children
-                            out = out + renderAST(renderer, child, contextStack, partials);
-                        end
-                    case matstache.internal.NodeType.Text
+                switch node.TokenType
+                    case matstache.internal.TokenType.Text
                         out = out + node.Content;
-                    case matstache.internal.NodeType.Variable
+                    case matstache.internal.TokenType.Variable
                         out = out + renderer.renderVariableNode(node, contextStack, true);
-                    case matstache.internal.NodeType.UnescapedVariable
+                    case matstache.internal.TokenType.UnescapedVariable
                         out = out + renderer.renderVariableNode(node, contextStack, false);
-                    case matstache.internal.NodeType.Section
+                    case matstache.internal.TokenType.SectionStart
                         out = out + renderer.renderSectionNode(node, contextStack, false, partials);
-                    case matstache.internal.NodeType.InvertedSection
+                    case matstache.internal.TokenType.InvertedStart
                         out = out + renderer.renderSectionNode(node, contextStack, true, partials);
-                    case matstache.internal.NodeType.Partial
+                    case matstache.internal.TokenType.Partial
                         out = out + renderer.renderPartialNode(node, contextStack, partials);
                 end
             end

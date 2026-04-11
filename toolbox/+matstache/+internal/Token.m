@@ -1,4 +1,4 @@
-classdef Token
+classdef Token < handle
     properties
         Content (1,1) string
         TokenType matstache.internal.TokenType {mustBeScalarOrEmpty}
@@ -6,16 +6,30 @@ classdef Token
         EndLine (1,1) int64
         StartColumn (1,1) int64
         EndColumn (1,1) int64
+        IsStandalone (1,1) logical
+        Children (1,:) matstache.internal.Token
     end
 
     methods
-        function token = Token(content, tokenType, startLine, endLine, startColumn, endColumn)
+        function token = Token(content, tokenType, startLine, endLine, startColumn, endColumn, isStandalone, children)
+            arguments
+                content
+                tokenType
+                startLine
+                endLine
+                startColumn
+                endColumn
+                isStandalone = false;
+                children = matstache.internal.Token.empty()
+            end
             token.Content = content;
             token.TokenType = tokenType;
             token.StartLine = startLine;
             token.EndLine = endLine;
             token.StartColumn = startColumn;
             token.EndColumn = endColumn;
+            token.IsStandalone = isStandalone;
+            token.Children = children;
         end
     end
 end
