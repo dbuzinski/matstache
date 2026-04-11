@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          submodules: true
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v3
         with:
