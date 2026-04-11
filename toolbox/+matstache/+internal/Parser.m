@@ -69,7 +69,12 @@ classdef Parser < handle
                         current = Token.empty();
                     case matstache.internal.TokenType.Partial
                         token.Content = makeValid(token.Content);
-                        token.IsStandalone = standaloneMask(i);
+                        % If a partial is stadalone, add its preceeding
+                        % whitespace tokens as children. We use this at
+                        % render time to indent all lines of the partial.
+                        if standaloneMask(i)
+                            token.Children = getPreceedingWhitespace(token, tokens);
+                        end
                         current(end+1) = token;
                     case matstache.internal.TokenType.SetDelimiters
                         % Skip delimiter changes
@@ -114,6 +119,14 @@ for i = 1:tokens(end).EndLine
         standaloneMask = standaloneMask | onLine;
     end
 end
+end
+
+function textTokens = getPreceedingWhitespace(token, tokens)
+% Find the any text tokens that end on the same line/column that token starts on
+lineMask = ([tokens.TokenType] == matstache.internal.TokenType.Text) & ...
+    ([tokens.EndLine] == token.StartLine) & ...
+    ([tokens.EndColumn] < token.StartColumn);
+textTokens = tokens(lineMask);
 end
 
 function name = makeValid(content)

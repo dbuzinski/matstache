@@ -6,12 +6,11 @@ classdef Token < handle
         EndLine (1,1) int64
         StartColumn (1,1) int64
         EndColumn (1,1) int64
-        IsStandalone (1,1) logical
         Children (1,:) matstache.internal.Token
     end
 
     methods
-        function token = Token(content, tokenType, startLine, endLine, startColumn, endColumn, isStandalone, children)
+        function token = Token(content, tokenType, startLine, endLine, startColumn, endColumn, children)
             arguments
                 content
                 tokenType
@@ -19,7 +18,6 @@ classdef Token < handle
                 endLine
                 startColumn
                 endColumn
-                isStandalone = false;
                 children = matstache.internal.Token.empty()
             end
             token.Content = content;
@@ -28,7 +26,6 @@ classdef Token < handle
             token.EndLine = endLine;
             token.StartColumn = startColumn;
             token.EndColumn = endColumn;
-            token.IsStandalone = isStandalone;
             token.Children = children;
         end
     end

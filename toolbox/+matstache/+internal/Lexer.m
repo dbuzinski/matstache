@@ -233,7 +233,6 @@ classdef Lexer < handle
                     lexer.RightDelimiter = newDelimiters{2};
                     lexer.IsUsingDefaultDelimiters = strcmp(newDelimiters{1}, lexer.DefaultLeftDelimiter) && ...
                         strcmp(newDelimiters{2}, lexer.DefaultRightDelimiter);
-
                 otherwise
                     tokenType = "Variable";
             end

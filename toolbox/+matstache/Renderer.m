@@ -92,10 +92,11 @@ classdef Renderer
                 return
             end
             partialTemplate = string(partials.(node.Content));
-            % Add indentations
-            if node.IsStandalone
+            % Add indentations. We store preceeding whitespace as children
+            % for partials
+            if ~isempty(node.Children)
                 partialTemplate = splitlines(partialTemplate);
-                indentation = string(repmat(' ', 1, node.StartColumn - 1));
+                indentation = join([node.Children.Content], "");
                 offset = 0;
                 % Don't append to the last element if it is a trailing
                 % newline
