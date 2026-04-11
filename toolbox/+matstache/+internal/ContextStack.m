@@ -12,7 +12,10 @@ classdef ContextStack
         end
 
         function stack = push(stack, ctx)
-            stack.Stack = [stack.Stack, ctx];
+            if ~isa(ctx, "matstache.Context")
+                ctx = matstache.internal.JsonContext(ctx);
+            end
+            stack.Stack(end+1) = ctx;
         end
 
         function [stack, ctx] = pop(stack)
