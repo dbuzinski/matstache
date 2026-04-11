@@ -1,47 +1,36 @@
 classdef SpecTests < matlab.unittest.TestCase
-
-    properties
-        Tests
-    end
-
-    properties (ClassSetupParameter)
-        specFiles = { ...
-            'testdata/spec/specs/comments.json', ...
-            'testdata/spec/specs/delimiters.json', ...
-            'testdata/spec/specs/interpolation.json', ...
-            'testdata/spec/specs/inverted.json', ...
-            'testdata/spec/specs/partials.json', ...
-            'testdata/spec/specs/sections.json'};
-    end
-
-    methods (TestClassSetup)
-        function noop(testCase,specFiles)
-        end
-    end
-
     properties (TestParameter)
-        specTests
-    end
-
-    methods (TestParameterDefinition,Static)
-        function specTests = loadSpec(specFiles)
-            spec = jsondecode(fileread(specFiles));
-            specTests = num2cell(spec.tests);
-        end
+        data = loadTestData()
     end
 
     methods (Test)
-        function validateRequirement(testCase, specTests)
-            if iscell(specTests)
-                specTests = specTests{1};
+        function testSpec(testCase, data)
+            args = {data.template, data.data};
+            if isfield(data, "partials")
+                args{end+1} = data.partials;
             end
-            args = {specTests.template, specTests.data};
-            if isfield(specTests, "partials")
-                args{end+1} = specTests.partials;
-            end
+            expected = string(data.expected);
             out = matstache.render(args{:});
-            testCase.verifyEqual(out, string(specTests.expected));
+            testCase.verifyEqual(expected, out, data.desc);
         end
     end
+end
 
+function testData = loadTestData()
+specFiles = [ "testdata/spec/specs/comments.json", ...
+    "testdata/spec/specs/delimiters.json", ...
+    "testdata/spec/specs/interpolation.json", ...
+    "testdata/spec/specs/inverted.json", ...
+    "testdata/spec/specs/partials.json", ...
+    "testdata/spec/specs/sections.json" ...
+];
+testData = {};
+for file = specFiles
+    jsonData = jsondecode(fileread(file));
+    tests = jsonData.tests(:)';
+    if ~iscell(tests)
+        tests = num2cell(tests);
+    end
+    testData = [testData, tests];
+end
 end

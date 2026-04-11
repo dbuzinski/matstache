@@ -18,7 +18,7 @@ classdef Context < matlab.mixin.Heterogeneous
     end
 
     methods (Static, Sealed, Access = protected)
-        function cobj = convertObject(Context, obj)
+        function cobj = convertObject(~, obj)
             cobj = matstache.internal.JsonContext(obj);
         end
     end

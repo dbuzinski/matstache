@@ -40,7 +40,11 @@ classdef ContextStack
                 curr = stack.Stack(i);
                 [tf, val] = lookup(curr, start);
                 if tf
-                    curr = [matstache.Context.empty val];
+                    if ~isa(val, "matstache.Context")
+                        curr = matstache.internal.JsonContext(val);
+                    else
+                        curr = val;
+                    end
                     break;
                 end
             end
@@ -61,7 +65,11 @@ classdef ContextStack
                 % get a miss
                 [tf, val] = lookup(curr, k);
                 if tf
-                    curr = [matstache.Context.empty val];
+                    if ~isa(val, "matstache.Context")
+                        curr = matstache.internal.JsonContext(val);
+                    else
+                        curr = val;
+                    end
                 else
                     break;
                 end

@@ -29,7 +29,7 @@ classdef ContextResult
 
         function it = iter(res)
             data = res.Data;
-            if ischar(data) || iscellstr(data)
+            if ischar(data) || iscellstr(data) %#ok<ISCLSTR> disable warning because we convert to string anyways
                 data = string(data);
             end
             if ~iscell(data)
