@@ -6,6 +6,7 @@ classdef Lexer < handle
         InTag (1,1) logical = false;
         InTriple (1,1) logical = false;
         InSetDelimiters (1,1) logical = false;
+        IsUsingDefaultDelimiters (1,1) logical = true;
         Sigil (1,:) char = ''
         Position (1,1) int64 = 1;
         StartPosition (1,1) int64 = 1;
@@ -13,7 +14,6 @@ classdef Lexer < handle
         StartColumn (1,1) int64 = 1;
         CurrentLine (1,1) int64 = 1;
         CurrentColumn (1,1) int64 = 1;
-        IsStandalone (1,1) logical = true;
         LeftDelimiter (1,:) char = '{{';
         RightDelimiter (1,:) char = '}}';
     end
@@ -69,6 +69,7 @@ classdef Lexer < handle
             lexer.InTag = false;
             lexer.InTriple = false;
             lexer.InSetDelimiters = false;
+            lexer.IsUsingDefaultDelimiters = true;
             lexer.Sigil = '';
             lexer.Position = 1;
             lexer.StartPosition = 1;
@@ -92,8 +93,7 @@ classdef Lexer < handle
             end
 
             if lexer.InTag
-                if lexer.InTriple && strcmp(lexer.LeftDelimiter, lexer.DefaultLeftDelimiter) ...
-                        && strcmp(lexer.RightDelimiter, lexer.DefaultRightDelimiter)
+                if lexer.InTriple && lexer.IsUsingDefaultDelimiters
                     delimiter = '}}}';
                     colOffset = 3;
                 elseif lexer.InSetDelimiters
@@ -222,6 +222,9 @@ classdef Lexer < handle
                     end
                     lexer.LeftDelimiter = newDelimiters{1};
                     lexer.RightDelimiter = newDelimiters{2};
+                    lexer.IsUsingDefaultDelimiters = strcmp(newDelimiters{1}, lexer.DefaultLeftDelimiter) && ...
+                        strcmp(newDelimiters{2}, lexer.DefaultRightDelimiter);
+
                 otherwise
                     tokenType = "Variable";
             end
@@ -233,13 +236,17 @@ classdef Lexer < handle
         end
 
         function tf = isTripleMustacheStart(lexer)
-            tf = strncmp(lexer.Template(lexer.Position:end), lexer.TripleMustacheStart, 3) && ...
-                strcmp(lexer.LeftDelimiter, lexer.DefaultLeftDelimiter) && ...
-                strcmp(lexer.RightDelimiter, lexer.DefaultRightDelimiter);
+            pos = lexer.Position;
+            tf = pos + 2 <= lexer.TemplateLength && ...
+                all(lexer.Template(pos:pos+2) == '{{{') && ...
+                lexer.IsUsingDefaultDelimiters;
         end
 
         function tf = isDelimiter(lexer, delimiter)
-            tf = strncmp(lexer.Template(lexer.Position:end), delimiter, length(delimiter));
+            pos = lexer.Position;
+            offset = length(delimiter) - 1;
+            tf = pos + offset <= lexer.TemplateLength && ...
+               all(lexer.Template(pos:pos+offset) == delimiter);
         end
     end
 end
