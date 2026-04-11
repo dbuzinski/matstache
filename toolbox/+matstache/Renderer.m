@@ -52,12 +52,13 @@ classdef Renderer
             out = "";
             res = contextStack.lookup(node.Content);
             if escaped
-                nodeOutput = cellfun(@escapedString, res.iter());
+                for data = res.iter()
+                    out = out + replace(string(data), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
+                end
             else
-                nodeOutput = cellfun(@string, res.iter());
-            end
-            if ~isempty(nodeOutput)
-                out = out + string(nodeOutput).join("");
+                for data = res.iter()
+                    out = out + data;
+                end
             end
         end
         
@@ -91,12 +92,12 @@ classdef Renderer
                 return
             end
             partialTemplate = string(partials.(node.Content));
-            % add indentations
+            % Add indentations
             if node.IsStandalone
                 partialTemplate = splitlines(partialTemplate);
                 indentation = string(repmat(' ', 1, node.StartColumn - 1));
                 offset = 0;
-                % don't append to the last element if it is a trailing
+                % Don't append to the last element if it is a trailing
                 % newline
                 if strlength(partialTemplate(end)) == 0
                     offset = -1;
@@ -108,8 +109,4 @@ classdef Renderer
             out = renderer.render(partialTemplate, ctx, partials);
         end
     end
-end
-
-function out = escapedString(s)
-out = replace(string(s), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
 end
