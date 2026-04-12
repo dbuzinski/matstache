@@ -43,11 +43,6 @@ classdef ContextStack
                 curr = stack.Stack(i);
                 [tf, val] = lookup__(curr, start);
                 if tf
-                    if ~isa(val, "matstache.Context")
-                        curr = matstache.internal.DataContext(val);
-                    else
-                        curr = val;
-                    end
                     break;
                 end
             end
@@ -61,16 +56,15 @@ classdef ContextStack
             % Now find remaining parts of the key in that context
             remaining = part(2:end);
             for k = remaining(:)'
+                if ~isa(val, "matstache.Context")
+                    curr = matstache.internal.DataContext(val);
+                else
+                    curr = val;
+                end
                 % Look up in that context until we've resolved all parts or
                 % get a miss
                 [tf, val] = lookup__(curr, k);
-                if tf
-                    if ~isa(val, "matstache.Context")
-                        curr = matstache.internal.DataContext(val);
-                    else
-                        curr = val;
-                    end
-                else
+                if ~tf
                     break;
                 end
             end
