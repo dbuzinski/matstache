@@ -3,9 +3,9 @@ classdef TokenType
         Text
         Variable
         UnescapedVariable
-        SectionStart
-        SectionEnd
-        InvertedStart
+        Section
+        Inverted
+        EndSection
         Partial
         SetDelimiters
         Comment

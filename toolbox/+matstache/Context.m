@@ -1,12 +1,17 @@
 classdef Context < matlab.mixin.Heterogeneous
-    methods (Sealed)
-        function [tf, val] = lookup(ctx, key)
-            [tf, val] = lookupElement(ctx, key);
+    methods (Hidden, Sealed)
+        function [tf, val] = lookup__(ctx, key)
+            [tf, val] = lookupElement__(ctx, key);
+        end
+    end
+
+    methods (Hidden)
+        function ctx = current__(ctx)
         end
     end
 
     methods (Access=protected)
-        function [tf, val] = lookupElement(ctx, key)
+        function [tf, val] = lookupElement__(ctx, key)
             if isprop(ctx, key) || ismethod(ctx, key)
                 tf = true;
                 val = ctx.(key);
@@ -19,7 +24,7 @@ classdef Context < matlab.mixin.Heterogeneous
 
     methods (Static, Sealed, Access = protected)
         function cobj = convertObject(~, obj)
-            cobj = matstache.internal.JsonContext(obj);
+            cobj = matstache.internal.DataContext(obj);
         end
     end
 end

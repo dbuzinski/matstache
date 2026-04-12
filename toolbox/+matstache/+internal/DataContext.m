@@ -1,20 +1,22 @@
-classdef JsonContext < matstache.Context
+classdef DataContext < matstache.Context
     properties
         Data
     end
 
     methods
-        function ctx = JsonContext(data)
+        function ctx = DataContext(data)
             ctx.Data = data;
         end
+    end
 
-        function val = current(ctx)
+    methods (Hidden)
+        function val = current__(ctx)
             val = ctx.Data;
         end
     end
 
-    methods (Access=protected)
-        function [tf, val] = lookupElement(ctx, key)
+    methods (Hidden, Access=protected)
+        function [tf, val] = lookupElement__(ctx, key)
             data = ctx.Data;
             if isstruct(data) && isfield(data, key)
                 val = data.(key);
@@ -25,6 +27,5 @@ classdef JsonContext < matstache.Context
                 val = [];
             end
         end
-
     end
 end

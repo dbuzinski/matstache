@@ -4,13 +4,24 @@ classdef SpecTests < matlab.unittest.TestCase
     end
 
     methods (Test)
-        function testSpec(testCase, data)
+        function testRenderFunctionAgainstSpec(testCase, data)
             args = {data.template, data.data};
             if isfield(data, "partials")
                 args{end+1} = data.partials;
             end
             expected = string(data.expected);
             out = matstache.render(args{:});
+            testCase.verifyEqual(expected, out, data.desc);
+        end
+
+        function testRendererAgainstSpec(testCase, data)
+            args = {data.template, data.data};
+            if isfield(data, "partials")
+                args{end+1} = data.partials;
+            end
+            expected = string(data.expected);
+            renderer = matstache.Renderer;
+            out = renderer.render(args{:});
             testCase.verifyEqual(expected, out, data.desc);
         end
     end

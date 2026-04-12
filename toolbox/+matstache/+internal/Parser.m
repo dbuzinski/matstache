@@ -6,6 +6,9 @@ classdef Parser < handle
 
     methods
         function p = Parser(lexer)
+            arguments
+                lexer (1,1) matstache.internal.Lexer = matstache.internal.Lexer()
+            end
             p.Lexer = lexer;
         end
 
@@ -41,14 +44,14 @@ classdef Parser < handle
                     case matstache.internal.TokenType.UnescapedVariable
                         token.Content = makeValid(token.Content);
                         current(end+1) = token;
-                    case matstache.internal.TokenType.SectionStart
+                    case matstache.internal.TokenType.Section
                         % Push current to end of stack
                         token.Content = makeValid(token.Content);
                         current(end+1) = token;
                         stack{end+1} = current;
                         % Set stack node as new current
                         current = Token.empty();
-                    case matstache.internal.TokenType.SectionEnd
+                    case matstache.internal.TokenType.EndSection
                         name = makeValid(token.Content);
                         if isempty(stack)
                             error("matstache:UnexpectedSectionClose", "Unexpected section close ''%s'' (line %d, column %d)", name, token.StartLine, token.StartColumn);
@@ -60,7 +63,7 @@ classdef Parser < handle
                         if ~strcmp(current(end).Content, name)
                             error("matstache:MismatchedSections", "Found mismatched section close ''%s'' for currently open section ''%s'' (line %d, column %d)", name, current.Content, token.StartLine, token.StartColumn);
                         end
-                    case matstache.internal.TokenType.InvertedStart
+                    case matstache.internal.TokenType.Inverted
                         % Push current to end of stack
                         token.Content = makeValid(token.Content);
                         current(end+1) = token;
@@ -96,7 +99,7 @@ end
 
 function tf = isStandalone(token)
 % Token types to treat as standalone: 
-%    SectionStart, SectionEnd, InvertedStart, Partial, SetDelimiters, Comment
+%    Section, EndSection, Inverted, Partial, SetDelimiters, Comment
 % Token types that are NOT standalone:
 %    Variable, UnescapedVariable
 % Text tokens are standalone if they only contain whitespace
@@ -134,14 +137,9 @@ name = strip(content);
 if name == "."
     return;
 end
-try
-    if ~contains(name, ".")
-        name = matlab.lang.makeValidName(name);
-    else
-        name = join(arrayfun(@matlab.lang.makeValidName, name.split(".")), ".");
-    end
-catch
-    msg = "Invalid variable name ''%s'' (line %d, column %d)";
-    error("matstache:InvalidVariableName", msg, name, token.StartLine, token.StartColumn);
+if ~contains(name, ".")
+    name = matlab.lang.makeValidName(name);
+else
+    name = join(arrayfun(@matlab.lang.makeValidName, name.split(".")), ".");
 end
 end

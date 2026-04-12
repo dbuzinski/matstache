@@ -58,9 +58,9 @@ classdef LexerTests < matlab.unittest.TestCase
             lexer = matstache.internal.Lexer();
             rawText = 'Hello {{#person}}{{name}}{{/person}}';
             expected = [Token('Hello ', "Text", 1, 1, 1, 6), ...
-                Token("person", "SectionStart", 1, 1, 7, 17), ...
+                Token("person", "Section", 1, 1, 7, 17), ...
                 Token("name", "Variable", 1, 1, 18, 25), ...
-                Token("person", "SectionEnd", 1, 1, 26, 36)
+                Token("person", "EndSection", 1, 1, 26, 36)
             ];
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);
@@ -111,9 +111,9 @@ classdef LexerTests < matlab.unittest.TestCase
         function tokenizesInvertedSections(testCase)
             lexer = matstache.internal.Lexer();
             rawText = '{{^boolean}}This should be rendered.{{/boolean}}';
-            expected = [Token("boolean", "InvertedStart", 1, 1, 1, 12), ...
+            expected = [Token("boolean", "Inverted", 1, 1, 1, 12), ...
                 Token("This should be rendered.", "Text", 1, 1, 13, 36), ...
-                Token("boolean", "SectionEnd", 1, 1, 37, 48)];
+                Token("boolean", "EndSection", 1, 1, 37, 48)];
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);
         end
@@ -209,7 +209,7 @@ classdef LexerTests < matlab.unittest.TestCase
             lexer = matstache.internal.Lexer();
             rawText = 'There is {{#}} an empty tag';
             expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
-                Token("", "SectionStart", 1, 1, 10, 14), ...
+                Token("", "Section", 1, 1, 10, 14), ...
                 Token(" an empty tag", "Text", 1, 1, 15, 27) ...
             ];
             actual = lexer.tokenize(rawText);
@@ -221,6 +221,46 @@ classdef LexerTests < matlab.unittest.TestCase
             expected = [Token("There is ", "Text", 1, 1, 1, 9), ...
                 Token(" ", "Variable", 1, 1, 10, 14), ...
                 Token(" an empty tag", "Text", 1, 1, 15, 27) ...
+            ];
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
+
+        function testChangingDelimitersBackToDefault(testCase)
+            lexer = matstache.internal.Lexer();
+            rawText = '{{=| |=}}|name||={{ }}=|{{name}}';
+            expected = [Token("| |", "SetDelimiters", 1, 1, 1, 9), ...
+                Token("name", "Variable", 1, 1, 10, 15), ...
+                Token("{{ }}", "SetDelimiters", 1, 1, 16, 24), ...
+                Token("name", "Variable", 1, 1, 25, 32), ...
+            ];
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
+
+        function unclosedDelimitersTokenizeAsText(testCase)
+            lexer = matstache.internal.Lexer();
+            rawText = '{{';
+            expected = Token("{{", "Text", 1, 1, 1, 2);
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
+
+        function tripleMustacheDoesntWorkForChangedDelimiters(testCase)
+            lexer = matstache.internal.Lexer();
+            rawText = '{{=| |=}}{{{ nope }}}';
+            expected = [Token("| |", "SetDelimiters", 1, 1, 1, 9), ...
+                Token("{{{ nope }}}", "Text", 1, 1, 10, 21), ...
+            ];
+            actual = lexer.tokenize(rawText);
+            testCase.verifyEqual(expected, actual);
+        end
+
+        function tripleMustacheDoesntWorkForChangedRightDelimiter(testCase)
+            lexer = matstache.internal.Lexer();
+            rawText = '{{={{ |=}}{{{ nope }}}';
+            expected = [Token("{{ |", "SetDelimiters", 1, 1, 1, 10), ...
+                Token("{{{ nope }}}", "Text", 1, 1, 11, 22), ...
             ];
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);

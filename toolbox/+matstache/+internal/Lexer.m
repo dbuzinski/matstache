@@ -96,11 +96,11 @@ classdef Lexer < handle
             end
 
             if lexer.InTag
-                if lexer.InTriple && lexer.IsUsingDefaultDelimiters
+                if lexer.InTriple
                     delimiter = '}}}';
                     colOffset = 3;
                 elseif lexer.InSetDelimiters
-                    delimiter = '=}}';
+                    delimiter = ['=' lexer.RightDelimiter];
                     colOffset = 3;
                 else
                     delimiter = lexer.RightDelimiter;
@@ -145,6 +145,7 @@ classdef Lexer < handle
 
                 % Advance past delimiter
                 delimiterLen = length(delimiter);
+                % pos = lexer.Position + delimiterLen;
                 lexer.Position = lexer.Position + delimiterLen;
                 lexer.CurrentColumn = lexer.CurrentColumn + delimiterLen;
 
@@ -193,7 +194,7 @@ classdef Lexer < handle
         end
 
         function token = createToken(lexer)
-            if ~lexer.InTag && ~lexer.InTriple
+            if ~lexer.InTag
                 token = matstache.internal.Token(lexer.Template(lexer.StartPosition:lexer.Position - 1), "Text", ...
                     lexer.StartLine, lexer.CurrentLine, ...
                     lexer.StartColumn, lexer.CurrentColumn - 1);
@@ -212,11 +213,11 @@ classdef Lexer < handle
                 case '{'
                     tokenType = "UnescapedVariable";
                 case '#'
-                    tokenType = "SectionStart";
+                    tokenType = "Section";
                 case '/'
-                    tokenType = "SectionEnd";
+                    tokenType = "EndSection";
                 case '^'
-                    tokenType = "InvertedStart";
+                    tokenType = "Inverted";
                 case '>'
                     tokenType = "Partial";
                 case '='

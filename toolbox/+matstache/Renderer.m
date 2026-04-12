@@ -38,9 +38,9 @@ classdef Renderer
                         out = out + renderer.renderVariableNode(node, contextStack, true);
                     case matstache.internal.TokenType.UnescapedVariable
                         out = out + renderer.renderVariableNode(node, contextStack, false);
-                    case matstache.internal.TokenType.SectionStart
+                    case matstache.internal.TokenType.Section
                         out = out + renderer.renderSectionNode(node, contextStack, false, partials);
-                    case matstache.internal.TokenType.InvertedStart
+                    case matstache.internal.TokenType.Inverted
                         out = out + renderer.renderSectionNode(node, contextStack, true, partials);
                     case matstache.internal.TokenType.Partial
                         out = out + renderer.renderPartialNode(node, contextStack, partials);
@@ -92,14 +92,13 @@ classdef Renderer
                 return
             end
             partialTemplate = string(partials.(node.Content));
-            % Add indentations. We store preceeding whitespace as children
+            % Add indentations. We store preceeding whitespace as child nodes
             % for partials
             if ~isempty(node.Children)
                 partialTemplate = splitlines(partialTemplate);
                 indentation = join([node.Children.Content], "");
                 offset = 0;
-                % Don't append to the last element if it is a trailing
-                % newline
+                % Don't append to the last element if it is a trailing newline
                 if strlength(partialTemplate(end)) == 0
                     offset = -1;
                 end

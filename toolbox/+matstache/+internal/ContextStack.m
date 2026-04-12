@@ -13,7 +13,7 @@ classdef ContextStack
 
         function stack = push(stack, ctx)
             if ~isa(ctx, "matstache.Context")
-                ctx = matstache.internal.JsonContext(ctx);
+                ctx = matstache.internal.DataContext(ctx);
             end
             stack.Stack(end+1) = ctx;
         end
@@ -29,8 +29,8 @@ classdef ContextStack
         function res = lookup(stack, key)
             % Return top of stack for .
             if strcmp(key, ".")
-                val = stack.Stack(end).current();
-                res = matstache.internal.ContextResult(true, val);
+                val = stack.Stack(end).current__();
+                res = matstache.internal.LookupResult(true, val);
                 return;
             end
 
@@ -41,10 +41,10 @@ classdef ContextStack
             start = part(1);
             for i=numel(stack.Stack):-1:1
                 curr = stack.Stack(i);
-                [tf, val] = lookup(curr, start);
+                [tf, val] = lookup__(curr, start);
                 if tf
                     if ~isa(val, "matstache.Context")
-                        curr = matstache.internal.JsonContext(val);
+                        curr = matstache.internal.DataContext(val);
                     else
                         curr = val;
                     end
@@ -54,22 +54,19 @@ classdef ContextStack
 
             % Return if we didn't get a hit or found an empty context
             if ~tf
-                res = matstache.internal.ContextResult(false, []);
+                res = matstache.internal.LookupResult(false, []);
                 return;
             end
 
             % Now find remaining parts of the key in that context
             remaining = part(2:end);
             for k = remaining(:)'
-                if isempty(curr)
-                    break;
-                end
                 % Look up in that context until we've resolved all parts or
                 % get a miss
-                [tf, val] = lookup(curr, k);
+                [tf, val] = lookup__(curr, k);
                 if tf
                     if ~isa(val, "matstache.Context")
-                        curr = matstache.internal.JsonContext(val);
+                        curr = matstache.internal.DataContext(val);
                     else
                         curr = val;
                     end
@@ -77,7 +74,7 @@ classdef ContextStack
                     break;
                 end
             end
-            res = matstache.internal.ContextResult(tf, val);
+            res = matstache.internal.LookupResult(tf, val);
         end
     end
 end

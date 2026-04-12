@@ -1,11 +1,11 @@
-classdef ContextResult
+classdef LookupResult
     properties
         Success (1,1) logical
         Data
     end
 
     methods
-        function res = ContextResult(success, data)
+        function res = LookupResult(success, data)
             res.Success = success;
             res.Data = data;
         end
@@ -18,7 +18,7 @@ classdef ContextResult
                 tf = true;
             elseif isa(data, "logical")
                 tf = data;
-            elseif isstring(data) || ischar(data)
+            elseif isstring(data)
                 tf = strlength(data) ~= 0;
             elseif isnumeric(data)
                 tf = logical(data);
