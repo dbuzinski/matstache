@@ -29,8 +29,7 @@ classdef ContextStack
         function res = lookup(stack, key)
             % Return top of stack for .
             if strcmp(key, ".")
-                val = stack.Stack(end).current__();
-                res = matstache.internal.LookupResult(true, val);
+                res = stack.Stack(end).current__();
                 return;
             end
 
@@ -41,7 +40,7 @@ classdef ContextStack
             start = part(1);
             for i=numel(stack.Stack):-1:1
                 curr = stack.Stack(i);
-                [tf, val] = lookup__(curr, start);
+                [tf, res] = lookup__(curr, start);
                 if tf
                     break;
                 end
@@ -49,26 +48,25 @@ classdef ContextStack
 
             % Return if we didn't get a hit or found an empty context
             if ~tf
-                res = matstache.internal.LookupResult(false, []);
+                res = [];
                 return;
             end
 
             % Now find remaining parts of the key in that context
             remaining = part(2:end);
             for k = remaining(:)'
-                if ~isa(val, "matstache.Context")
-                    curr = matstache.internal.DataContext(val);
+                if ~isa(res, "matstache.Context")
+                    curr = matstache.internal.DataContext(res);
                 else
-                    curr = val;
+                    curr = res;
                 end
                 % Look up in that context until we've resolved all parts or
                 % get a miss
-                [tf, val] = lookup__(curr, k);
+                [tf, res] = lookup__(curr, k);
                 if ~tf
                     break;
                 end
             end
-            res = matstache.internal.LookupResult(tf, val);
         end
     end
 end

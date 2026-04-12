@@ -52,11 +52,11 @@ classdef Renderer
             out = "";
             res = contextStack.lookup(node.Content);
             if escaped
-                for data = res.iter()
+                for data = iter(res)
                     out = out + replace(string(data), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
                 end
             else
-                for data = res.iter()
+                for data = iter(res)
                     out = out + data;
                 end
             end
@@ -65,9 +65,9 @@ classdef Renderer
         function out = renderSectionNode(renderer, node, contextStack, inverted, partials)
             out = "";
             res = contextStack.lookup(node.Content);
-            isTruthy = res.isTruthy();
+            isTruthy = matstache.internal.isTruthy(res);
             if isTruthy && ~inverted
-                it = res.iter();
+                it = iter(res);
                 for data = it(:)'
                     out = out + renderChildren(renderer, node.Children, data{1}, contextStack, partials);
                 end
@@ -109,4 +109,14 @@ classdef Renderer
             out = renderer.render(partialTemplate, ctx, partials);
         end
     end
+end
+
+function it = iter(data)
+    if ischar(data) || iscellstr(data) %#ok<ISCLSTR> disable warning because we convert to string anyways
+        data = string(data);
+    end
+    if ~iscell(data)
+        data = num2cell(data);
+    end
+    it = data;
 end

@@ -14,8 +14,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("name");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx.name);
+            testCase.verifyEqual(res, ctx.name);
         end
 
         function lookupWorksWithNestedContextObjects(testCase)
@@ -23,8 +22,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("nested.name");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx.name);
+            testCase.verifyEqual(res, ctx.name);
         end
 
         function lookupWorksWithDeeplyNestedContextObjects(testCase)
@@ -32,8 +30,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("nested.nested.name");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx.name);
+            testCase.verifyEqual(res, ctx.name);
         end
 
         function falseLookupWithDeeplyNestedContextObjects(testCase)
@@ -41,7 +38,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("nested.doesnt.exist");
 
-            testCase.verifyFalse(res.Success);
+            testCase.verifyEmpty(res);
         end
         
         function lookupPeriodReturnsCurrent(testCase)
@@ -49,8 +46,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup(".");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx);
+            testCase.verifyEqual(res, ctx);
         end
 
         function pushAutoConvertsStructs(testCase)
@@ -59,15 +55,14 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = stack.push(ctx);
             res = stack.lookup(".");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx);
+            testCase.verifyEqual(res, ctx);
         end
 
         function falseLookupResultIfNotInContext(testCase)
             ctx = struct("a", 1, "b", 2);
             stack = ContextStack(ctx);
             res = stack.lookup("c");
-            testCase.verifyFalse(res.Success);
+            testCase.verifyEmpty(res);
         end
 
         function popRemovesFromTopOfStack(testCase)
@@ -78,14 +73,12 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = stack.push(ctx2);
             res = stack.lookup(".");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx2);
+            testCase.verifyEqual(res, ctx2);
 
             stack = stack.pop();
             res = stack.lookup(".");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEqual(res.Data, ctx1);
+            testCase.verifyEqual(res, ctx1);
         end
 
         function cannotPopFromEmptyStack(testCase)
@@ -105,8 +98,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("a");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEmpty(res.Data);
+            testCase.verifyEmpty(res);
         end
 
         function nestedLookupIsEmptyArray(testCase)
@@ -114,8 +106,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("a.b");
 
-            testCase.verifyTrue(res.Success);
-            testCase.verifyEmpty(res.Data);
+            testCase.verifyEmpty(res);
         end
 
         function nestedNullLookup(testCase)
@@ -126,7 +117,7 @@ classdef ContextStackTests < matlab.unittest.TestCase
             stack = ContextStack(ctx);
             res = stack.lookup("a.b");
 
-            testCase.verifyFalse(res.Success);
+            testCase.verifyEmpty(res);
         end
     end
 end
