@@ -1,16 +1,9 @@
 classdef Renderer
     properties
-        Parser
+        Parser = matstache.internal.Parser()
     end
 
     methods
-        function r = Renderer(parser)
-            arguments
-                parser (1,1) matstache.internal.Parser = matstache.internal.Parser(matstache.internal.Lexer)
-            end
-            r.Parser = parser;
-        end
-
         function out = render(renderer, template, context, partials)
             arguments (Input)
                 renderer (1,1) matstache.Renderer
@@ -56,9 +49,11 @@ classdef Renderer
             if isa(res, "function_handle")
                 [~, ctx] = contextStack.pop();
                 if escaped
-                    out = out + replace(renderer.render(res(), ctx, partials), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
+                    data = toString({res()}, key);
+                    out = out + replace(renderer.render(data, ctx, partials), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
                 else
-                    out = out + renderer.render(res(), ctx, partials);
+                    data = toString({res()}, key);
+                    out = out + renderer.render(data, ctx, partials);
                 end
             elseif escaped
                 for data = iter(res)
@@ -82,9 +77,7 @@ classdef Renderer
                     lambdaEval = res(childContent(node, template));
                     % Render with current delimiters
                     % May want to clean this up a little in the future
-                    lexer = matstache.internal.Lexer(Delimiters=string({node.LeftDelimiter, node.RightDelimiter}));
-                    tokens = lexer.tokenize(lambdaEval, Reset=false);
-                    ast = renderer.Parser.parseTokens(tokens);
+                    ast = renderer.Parser.parse(lambdaEval, Delimiters={node.LeftDelimiter, node.RightDelimiter});
                     out = out + renderAST(renderer, ast, contextStack, lambdaEval, partials);
                 else
                     it = iter(res);

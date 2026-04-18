@@ -1,30 +1,29 @@
 classdef Parser < handle
     properties
-        TemplateCache (1, 1) dictionary = dictionary(string([]), cell([]))
-        Lexer (1,1) matstache.internal.Lexer
+        TemplateCache (1,1) dictionary = dictionary(string([]), cell([]))
+        Lexer (1,1) matstache.internal.Lexer = matstache.internal.Lexer()
     end
 
     methods
-        function p = Parser(lexer)
+        function ast = parse(parser, template, options)
             arguments
-                lexer (1,1) matstache.internal.Lexer = matstache.internal.Lexer()
+                parser (1,1) matstache.internal.Parser
+                template (1,1) string
+                options.Delimiters (1,2) string = ["{{", "}}"]
             end
-            p.Lexer = lexer;
-        end
-
-        function ast = parse(parser, template)
+            key = "L="+options.Delimiters(1)+"R="+options.Delimiters(2)+"T="+template;
             % Use cached AST if available
-            if isKey(parser.TemplateCache, template)
-                ast = parser.TemplateCache{template};
+            if isKey(parser.TemplateCache, key)
+                ast = parser.TemplateCache{key};
                 return;
             end
             % Tokenize template
-            tokens = parser.Lexer.tokenize(template);
+            tokens = parser.Lexer.tokenize(template, Delimiters=options.Delimiters);
             
             ast = parseTokens(parser, tokens);
 
             % Store result in cache
-            parser.TemplateCache(template) = {ast};
+            parser.TemplateCache(key) = {ast};
         end
 
         function ast = parseTokens(~, tokens)

@@ -14,9 +14,6 @@ classdef Lexer < handle
         StartColumn (1,1) int64 = 1;
         CurrentLine (1,1) int64 = 1;
         CurrentColumn (1,1) int64 = 1;
-    end
-
-    properties
         LeftDelimiter (1,:) char = '{{';
         RightDelimiter (1,:) char = '}}';
     end
@@ -29,14 +26,6 @@ classdef Lexer < handle
     end
 
     methods
-        function lexer = Lexer(options)
-            arguments
-                options.Delimiters (1,2) string = ["{{" "}}"]
-            end
-            lexer.LeftDelimiter = options.Delimiters(1);
-            lexer.RightDelimiter = options.Delimiters(2);
-        end
-
         function token = nextToken(lexer)
             if lexer.Position > lexer.TemplateLength
                 token = matstache.internal.Token.empty();
@@ -62,12 +51,12 @@ classdef Lexer < handle
             arguments
                 lexer (1,1) matstache.internal.Lexer
                 template {mustBeTextScalar}
-                options.Reset (1,1) logical = true
+                options.Delimiters (1,2) string = ["{{", "}}"]
             end
             tokens = matstache.internal.Token.empty();
-            if options.Reset
-                lexer.reset();
-            end
+            lexer.reset();
+            lexer.LeftDelimiter = options.Delimiters(1);
+            lexer.RightDelimiter = options.Delimiters(2);
             lexer.setTemplate(template);
             token = lexer.nextToken();
             while ~isempty(token)

@@ -155,10 +155,12 @@ classdef ParserTests < matlab.unittest.TestCase
             ast = parser.parse(template);
 
             % Template is added to the cache
-            testCase.verifyTrue(isKey(parser.TemplateCache, template));
+            % Key is format L=<left delim>R=<right delim>T=<template>
+            key = "L={{R=}}T="+template;
+            testCase.verifyTrue(isKey(parser.TemplateCache, key));
 
             % Cache resolves to expected value
-            cached = parser.TemplateCache(template);
+            cached = parser.TemplateCache(key);
             testCase.verifyEqual(cached{1}, ast);
         end
 
@@ -167,7 +169,10 @@ classdef ParserTests < matlab.unittest.TestCase
             expected = Token("Cache hit", "Text", 1, 1, 1, 9, 1, 9);
 
             parser = Parser();
-            parser.TemplateCache(template) = {expected};
+            % Key is format L=<left delim>R=<right delim>T=<template>
+            key = "L={{R=}}T="+template;
+
+            parser.TemplateCache(key) = {expected};
             ast = parser.parse(template);
 
             testCase.verifyEqual(expected, ast);

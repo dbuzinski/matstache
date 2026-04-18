@@ -6,8 +6,9 @@
 *.mdl.r*
 *.DS_Store*
 
-# Build tool cache folder
+# Build tool folders
 .buildtool
+results
 
 # Derived content-obscured files
 *.p
