@@ -1,10 +1,34 @@
 classdef Renderer
-    properties
+    % matstache.Renderer - Mustache template renderer
+    %
+    %   The matstache.Renderer class parses template strings and substitutes
+    %   variables, sections, and partials using a matstache.Context.
+    %
+    %   Renderer methods:
+    %      render - Render template with context and optional partials
+    %
+    %   Example:
+    %
+    %      tpl = "Hello, {{name}}!";
+    %      r = matstache.Renderer;
+    %      ctx = struct("name","world");
+    %      out = r.render(tpl, ctx);
+    %
+    %   See also matstache.render, matstache.Context
+
+    properties (Access=private)
         Parser = matstache.internal.Parser()
     end
 
     methods
         function out = render(renderer, template, context, partials)
+            % render - Render template with context and optional partials
+            %
+            %   This MATLAB function parses the template, then renders it using
+            %   the specified context and optional named partial templates.
+            %
+            %   See also matstache.render
+
             arguments (Input)
                 renderer (1,1) matstache.Renderer
                 template (1,1) string
