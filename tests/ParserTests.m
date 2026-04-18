@@ -1,10 +1,17 @@
 classdef ParserTests < matlab.unittest.TestCase
     methods (Test)
+        function parsesEmpty(testCase)
+            template = '';
+            parser = Parser();
+            ast = parser.parse(template);
+            testCase.verifyEmpty(ast);
+        end
+
         function parsesRegularText(testCase)
             template = 'Hello world';
             parser = Parser();
             ast = parser.parse(template);
-            expected = Token("Hello world", "Text", 1, 1, 1, 11);
+            expected = Token("Hello world", "Text", 1, 1, 1, 11, 1, 11);
             testCase.verifyEqual(expected, ast);
         end
 
@@ -12,7 +19,7 @@ classdef ParserTests < matlab.unittest.TestCase
             template = '{{ name }}';
             parser = Parser();
             ast = parser.parse(template);
-            expected = Token("name", "Variable", 1, 1, 1, 10);
+            expected = Token("name", "Variable", 1, 1, 1, 10, 1, 10);
             testCase.verifyEqual(expected, ast);
         end
 
@@ -20,7 +27,7 @@ classdef ParserTests < matlab.unittest.TestCase
             template = '{{& name }}';
             parser = Parser();
             ast = parser.parse(template);
-            expected = Token("name", "UnescapedVariable", 1, 1, 1, 11);
+            expected = Token("name", "UnescapedVariable", 1, 1, 1, 11, 1, 11);
             testCase.verifyEqual(expected, ast);
         end
 
@@ -29,8 +36,8 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("employee", "Section", 1, 1, 1, 15);
-            expected.Children = Token("name", "Variable", 1, 1, 16, 25);
+            expected = Token("employee", "Section", 1, 1, 1, 15, 1, 15);
+            expected.Children = Token("name", "Variable", 1, 1, 16, 25, 16, 25);
 
             testCase.verifyEqual(expected, ast);
         end
@@ -40,8 +47,8 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("employee", "Inverted", 1, 1, 1, 15);
-            expected.Children = Token("name", "Variable", 1, 1, 16, 25);
+            expected = Token("employee", "Inverted", 1, 1, 1, 15, 1, 15);
+            expected.Children = Token("name", "Variable", 1, 1, 16, 25, 16, 25);
             
             testCase.verifyEqual(expected, ast);
         end
@@ -50,7 +57,7 @@ classdef ParserTests < matlab.unittest.TestCase
             template = '{{=|| ||=}}|| name ||';
             parser = Parser();
             ast = parser.parse(template);
-            expected = Token("name", "Variable", 1, 1, 12, 21);
+            expected = Token("name", "Variable", 1, 1, 12, 21, 12, 21, '||', '||');
             testCase.verifyEqual(expected, ast);
         end
 
@@ -58,7 +65,7 @@ classdef ParserTests < matlab.unittest.TestCase
             template = 'Hello{{! invisible! }}';
             parser = Parser();
             ast = parser.parse(template);
-            expected = Token("Hello", "Text", 1, 1, 1, 5);
+            expected = Token("Hello", "Text", 1, 1, 1, 5, 1, 5);
             testCase.verifyEqual(expected, ast);
         end
 
@@ -67,9 +74,9 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("employee", "Section", 1, 1, 5, 19);
-            expected.Children = [ Token("name", "Variable", 2, 2, 1, 10) ...
-                Token(newline, "Text", 2, 2, 11, 11)];
+            expected = Token("employee", "Section", 1, 1, 5, 19, 5, 19);
+            expected.Children = [ Token("name", "Variable", 2, 2, 1, 10, 21, 30) ...
+                Token(newline, "Text", 2, 2, 11, 11, 31, 31)];
             
             testCase.verifyEqual(expected, ast);
         end
@@ -79,9 +86,9 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("employee", "Inverted", 1, 1, 5, 19);
-            expected.Children = [ Token("name", "Variable", 2, 2, 1, 10) ...
-                Token(newline, "Text", 2, 2, 11, 11)];
+            expected = Token("employee", "Inverted", 1, 1, 5, 19, 5, 19);
+            expected.Children = [ Token("name", "Variable", 2, 2, 1, 10, 21, 30) ...
+                Token(newline, "Text", 2, 2, 11, 11, 31, 31)];
             
             testCase.verifyEqual(expected, ast);
         end
@@ -91,9 +98,9 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("employee", "Section", 1, 1, 1, 15);
-            expected.Children = [ Token("name", "Variable", 2, 2, 1, 10) ...
-                Token(newline, "Text", 2, 2, 11, 11)];
+            expected = Token("employee", "Section", 1, 1, 1, 15, 1, 15);
+            expected.Children = [ Token("name", "Variable", 2, 2, 1, 10, 17, 26) ...
+                Token(newline, "Text", 2, 2, 11, 11, 27, 27)];
             
             testCase.verifyEqual(expected, ast);
         end
@@ -103,8 +110,8 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("post", "Partial", 1, 1, 5, 15);
-            expected.Children = Token("    ", "Text", 1, 1, 1, 4);
+            expected = Token("post", "Partial", 1, 1, 5, 15, 5, 15);
+            expected.Children = Token("    ", "Text", 1, 1, 1, 4, 1, 4);
 
             testCase.verifyEqual(expected, ast);
         end
@@ -114,7 +121,7 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("snake_case", "Variable", 1, 1, 1, 16);
+            expected = Token("snake_case", "Variable", 1, 1, 1, 16, 1, 16);
 
             testCase.verifyEqual(expected, ast);
         end
@@ -124,7 +131,7 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token(".", "Variable", 1, 1, 1, 7);
+            expected = Token(".", "Variable", 1, 1, 1, 7, 1, 7);
 
             testCase.verifyEqual(expected, ast);
         end
@@ -134,7 +141,7 @@ classdef ParserTests < matlab.unittest.TestCase
             parser = Parser();
             ast = parser.parse(template);
 
-            expected = Token("snake_1.snake_2", "Variable", 1, 1, 1, 21);
+            expected = Token("snake_1.snake_2", "Variable", 1, 1, 1, 21, 1, 21);
 
             testCase.verifyEqual(expected, ast);
         end
@@ -148,19 +155,24 @@ classdef ParserTests < matlab.unittest.TestCase
             ast = parser.parse(template);
 
             % Template is added to the cache
-            testCase.verifyTrue(isKey(parser.TemplateCache, template));
+            % Key is format L=<left delim>R=<right delim>T=<template>
+            key = "L={{R=}}T="+template;
+            testCase.verifyTrue(isKey(parser.TemplateCache, key));
 
             % Cache resolves to expected value
-            cached = parser.TemplateCache(template);
+            cached = parser.TemplateCache(key);
             testCase.verifyEqual(cached{1}, ast);
         end
 
         function retrievesKnownTemplatesFromCache(testCase)
             template = 'known';
-            expected = Token("Cache hit", "Text", 1, 1, 1, 9);
+            expected = Token("Cache hit", "Text", 1, 1, 1, 9, 1, 9);
 
             parser = Parser();
-            parser.TemplateCache(template) = {expected};
+            % Key is format L=<left delim>R=<right delim>T=<template>
+            key = "L={{R=}}T="+template;
+
+            parser.TemplateCache(key) = {expected};
             ast = parser.parse(template);
 
             testCase.verifyEqual(expected, ast);

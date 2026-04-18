@@ -6,11 +6,17 @@ classdef Token < handle
         EndLine (1,1) int64
         StartColumn (1,1) int64
         EndColumn (1,1) int64
+        StartPosition (1,1) int64
+        EndPosition (1,1) int64
+        LeftDelimiter (1,:) char
+        RightDelimiter (1,:) char
         Children (1,:) matstache.internal.Token
     end
 
     methods
-        function token = Token(content, tokenType, startLine, endLine, startColumn, endColumn, children)
+        function token = Token(content, tokenType, startLine, endLine, ...
+                startColumn, endColumn, startPosition, endPosition, ...
+                leftDelimiter, rightDelimiter, children)
             arguments
                 content
                 tokenType
@@ -18,6 +24,10 @@ classdef Token < handle
                 endLine
                 startColumn
                 endColumn
+                startPosition
+                endPosition
+                leftDelimiter = '{{',
+                rightDelimiter = '}}',
                 children = matstache.internal.Token.empty()
             end
             token.Content = content;
@@ -26,6 +36,10 @@ classdef Token < handle
             token.EndLine = endLine;
             token.StartColumn = startColumn;
             token.EndColumn = endColumn;
+            token.StartPosition = startPosition;
+            token.EndPosition = endPosition;
+            token.LeftDelimiter = leftDelimiter;
+            token.RightDelimiter = rightDelimiter;
             token.Children = children;
         end
     end

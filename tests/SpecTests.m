@@ -5,23 +5,15 @@ classdef SpecTests < matlab.unittest.TestCase
 
     methods (Test)
         function testRenderFunctionAgainstSpec(testCase, data)
+            if isfield(data.data, "lambda")
+                data.data.lambda = str2func(data.data.lambda.matlab);
+            end
             args = {data.template, data.data};
             if isfield(data, "partials")
                 args{end+1} = data.partials;
             end
             expected = string(data.expected);
             out = matstache.render(args{:});
-            testCase.verifyEqual(expected, out, data.desc);
-        end
-
-        function testRendererAgainstSpec(testCase, data)
-            args = {data.template, data.data};
-            if isfield(data, "partials")
-                args{end+1} = data.partials;
-            end
-            expected = string(data.expected);
-            renderer = matstache.Renderer;
-            out = renderer.render(args{:});
             testCase.verifyEqual(expected, out, data.desc);
         end
     end
@@ -34,6 +26,7 @@ specFiles = [ "testdata/spec/specs/comments.json", ...
     "testdata/spec/specs/inverted.json", ...
     "testdata/spec/specs/partials.json", ...
     "testdata/spec/specs/sections.json" ...
+    "testdata/spec/specs/~lambdas.json" ...
 ];
 testData = {};
 for file = specFiles

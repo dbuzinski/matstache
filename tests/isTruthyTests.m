@@ -64,6 +64,11 @@ classdef isTruthyTests < matlab.unittest.TestCase
             res = isTruthy(testCase);
             testCase.verifyTrue(isTruthy(res));
         end
+
+        function anyLambdaIsTruthy(testCase)
+            res = isTruthy(@() false);
+            testCase.verifyTrue(isTruthy(res));
+        end
     end
 end
 
