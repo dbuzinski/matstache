@@ -15,5 +15,6 @@ jobs:
         uses: matlab-actions/setup-matlab@v3
         with:
           cache: true
+          products: MATLAB_Test
       - name: Run MATLAB build
         uses: matlab-actions/run-build@v3
