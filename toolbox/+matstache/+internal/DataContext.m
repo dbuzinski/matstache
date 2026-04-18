@@ -19,9 +19,12 @@ classdef DataContext < matstache.Context
         function [tf, val] = lookupElement__(ctx, key)
             data = ctx.Data;
             if isstruct(data) && isfield(data, key)
-                val = data.(key);
-                val = val(:)';
                 tf = true;
+                val = data.(key);
+                % This guard is important for lambdas
+                if ~isscalar(val)
+                    val = val(:)';
+                end
             else
                 tf = false;
                 val = [];

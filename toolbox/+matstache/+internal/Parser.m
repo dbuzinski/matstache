@@ -13,8 +13,6 @@ classdef Parser < handle
         end
 
         function ast = parse(parser, template)
-            import matstache.internal.Token;
-
             % Use cached AST if available
             if isKey(parser.TemplateCache, template)
                 ast = parser.TemplateCache{template};
@@ -22,6 +20,15 @@ classdef Parser < handle
             end
             % Tokenize template
             tokens = parser.Lexer.tokenize(template);
+            
+            ast = parseTokens(parser, tokens);
+
+            % Store result in cache
+            parser.TemplateCache(template) = {ast};
+        end
+
+        function ast = parseTokens(~, tokens)
+            import matstache.internal.Token;
 
             % Create root now
             % Set it as the current root
@@ -91,8 +98,6 @@ classdef Parser < handle
                 error("matstache:UnclosedSection", "No closing tag found for section ''%s'' (line %d, column %d)", unclosed.Content, unclosed.StartLine, unclosed.StartColumn);
             end
             ast = current;
-            % Store result in cache
-            parser.TemplateCache(template) = {ast};
         end
     end
 end
@@ -109,11 +114,14 @@ tf = ~(token.TokenType == matstache.internal.TokenType.Variable) && ...
 end
 
 function standaloneMask = findStandaloneWhiteSpace(tokens)
+standaloneMask = false(1, numel(tokens));
+if isempty(tokens)
+    return;
+end
 startLines = [tokens.StartLine];
 endLines = [tokens.EndLine];
-standaloneMask = false(1, numel(tokens));
 % Iterate over all lines
-for i = 1:tokens(end).EndLine
+for i = 1:endLines(end)
     % If all tokens on the line are standalone, skip rendering text for the line
     onLine = startLines <= i & endLines >= i;
     line = tokens(onLine);

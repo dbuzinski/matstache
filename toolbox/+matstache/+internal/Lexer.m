@@ -14,6 +14,9 @@ classdef Lexer < handle
         StartColumn (1,1) int64 = 1;
         CurrentLine (1,1) int64 = 1;
         CurrentColumn (1,1) int64 = 1;
+    end
+
+    properties
         LeftDelimiter (1,:) char = '{{';
         RightDelimiter (1,:) char = '}}';
     end
@@ -26,6 +29,14 @@ classdef Lexer < handle
     end
 
     methods
+        function lexer = Lexer(options)
+            arguments
+                options.Delimiters (1,2) string = ["{{" "}}"]
+            end
+            lexer.LeftDelimiter = options.Delimiters(1);
+            lexer.RightDelimiter = options.Delimiters(2);
+        end
+
         function token = nextToken(lexer)
             if lexer.Position > lexer.TemplateLength
                 token = matstache.internal.Token.empty();
@@ -47,13 +58,16 @@ classdef Lexer < handle
             lexer.TemplateLength = length(template);
         end
 
-        function tokens = tokenize(lexer, template)
+        function tokens = tokenize(lexer, template, options)
             arguments
                 lexer (1,1) matstache.internal.Lexer
                 template {mustBeTextScalar}
+                options.Reset (1,1) logical = true
             end
             tokens = matstache.internal.Token.empty();
-            lexer.reset();
+            if options.Reset
+                lexer.reset();
+            end
             lexer.setTemplate(template);
             token = lexer.nextToken();
             while ~isempty(token)
@@ -91,7 +105,9 @@ classdef Lexer < handle
                 content = template(lexer.StartPosition:lexer.Position-1);
                 lexer.Token = matstache.internal.Token(content, "Text", ...
                     lexer.StartLine, lexer.CurrentLine, ...
-                    lexer.StartColumn, lexer.CurrentColumn - 1);
+                    lexer.StartColumn, lexer.CurrentColumn - 1, ...
+                    lexer.StartPosition, lexer.Position - 1, ...
+                    lexer.LeftDelimiter, lexer.RightDelimiter);
                 return;
             end
 
@@ -197,7 +213,9 @@ classdef Lexer < handle
             if ~lexer.InTag
                 token = matstache.internal.Token(lexer.Template(lexer.StartPosition:lexer.Position - 1), "Text", ...
                     lexer.StartLine, lexer.CurrentLine, ...
-                    lexer.StartColumn, lexer.CurrentColumn - 1);
+                    lexer.StartColumn, lexer.CurrentColumn - 1, ...
+                    lexer.StartPosition, lexer.Position - 1, ...
+                    lexer.LeftDelimiter, lexer.RightDelimiter);
                 return;
             end
 
@@ -241,7 +259,9 @@ classdef Lexer < handle
             token = matstache.internal.Token(lexer.Template(lexer.StartPosition + posOffset:lexer.Position-1), ...
                 tokenType, ...
                 lexer.StartLine, lexer.CurrentLine, ...
-                lexer.StartColumn, lexer.CurrentColumn + colOffset);
+                lexer.StartColumn, lexer.CurrentColumn + colOffset, ...
+                lexer.StartPosition, lexer.Position + colOffset, ...
+                lexer.LeftDelimiter, lexer.RightDelimiter);
         end
     end
 end
