@@ -1,0 +1,100 @@
+{{! User Dashboard Template }}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{app.name}} - Dashboard</title>
+</head>
+<body>
+
+<h1>Welcome, {{user.name}}!</h1>
+
+{{#user.isPremium}}
+<div class="premium-banner">
+  <p>🌟 Premium Member since {{user.memberSince}}</p>
+</div>
+{{/user.isPremium}}
+
+<h2>Your Stats</h2>
+<ul>
+  <li>Posts: {{user.stats.posts}}</li>
+  <li>Followers: {{user.stats.followers}}</li>
+  <li>Following: {{user.stats.following}}</li>
+</ul>
+
+<h2>Projects</h2>
+{{#projects}}
+<div class="project">
+  <h3>{{name}}</h3>
+  <p>{{description}}</p>
+
+  {{#active}}
+  <span>Status: Active</span>
+  {{/active}}
+  {{^active}}
+  <span>Status: Inactive</span>
+  {{/active}}
+
+  <h4>Contributors</h4>
+  <ul>
+    {{#contributors}}
+    <li>
+      {{name}} ({{role}})
+      {{#isLead}}⭐{{/isLead}}
+    </li>
+    {{/contributors}}
+  </ul>
+
+  <h4>Tasks</h4>
+  <ul>
+    {{#tasks}}
+    <li>
+      <strong>{{title}}</strong> - {{status}}
+      {{#tags}}
+        <span class="tag">{{.}}</span>
+      {{/tags}}
+
+      {{#comments.length}}
+      <ul>
+        {{#comments}}
+        <li>{{author}}: {{message}}</li>
+        {{/comments}}
+      </ul>
+      {{/comments.length}}
+    </li>
+    {{/tasks}}
+  </ul>
+
+</div>
+{{/projects}}
+
+<h2>Notifications</h2>
+<ul>
+  {{#notifications}}
+  <li>
+    {{message}} - <em>{{time}}</em>
+    {{#unread}}<strong>(NEW)</strong>{{/unread}}
+  </li>
+  {{/notifications}}
+</ul>
+
+<h2>System Logs</h2>
+<ul>
+  {{#logs}}
+  <li>[{{level}}] {{message}} ({{timestamp}})</li>
+  {{/logs}}
+</ul>
+
+{{#footer}}
+<footer>
+  <p>{{text}}</p>
+  <ul>
+    {{#links}}
+    <li><a href="{{url}}">{{label}}</a></li>
+    {{/links}}
+  </ul>
+</footer>
+{{/footer}}
+
+</body>
+</html>

@@ -17,10 +17,14 @@ classdef Renderer
     %   See also matstache.render, matstache.Context
 
     properties (Access=private)
-        Parser = matstache.internal.Parser()
+        Parser
     end
 
     methods
+        function renderer = Renderer()
+            renderer.Parser = matstache.internal.Parser();
+        end
+
         function out = render(renderer, template, context, partials)
             % render - Render template with context and optional partials
             %
