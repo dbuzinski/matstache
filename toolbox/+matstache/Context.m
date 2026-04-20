@@ -1,22 +1,24 @@
 classdef Context < matlab.mixin.Heterogeneous
-    % Context - Template context for Mustache rendering
+    % Context - Data used to render Mustache templates
     %
-    %   The matstache.Context class is the base type for template data passed
-    %   to matstache.render and matstache.Renderer. Context data can be a
-    %   struct or a subclass of matstache.Context whose field names,
-    %   properties, and methods match tags referenced in the template.
+    %   The matstache.Context class represents context data used to render
+    %   Mustache templates.
+    %
+    %   When specifying inputs to functions, you can use structs instead of
+    %   Context objects.  MATLAB automatically converts structs to Context
+    %   objects.
     %
     %   Examples:
     %
     %      % Automatically convert a struct to a context
-    %      ctx = [matstache.Context.empty(), struct("title","Hello","name","world")];
-    %      out = matstache.render("{{title}}, {{name}}!", ctx);
+    %      context = [matstache.Context.empty(), struct("title","Hello","name","world")];
+    %      out = matstache.render("{{title}}, {{name}}!", context);
     %
     %      % Create a subclass of matstache.Context with properties title and name
-    %      ctx = MyContextClass();
-    %      ctx.title = "Hello";
-    %      ctx.name = "world";
-    %      out = matstache.render("{{title}}, {{name}}!", ctx);
+    %      context = MyContextClass();
+    %      context.title = "Hello";
+    %      context.name = "world";
+    %      out = matstache.render("{{title}}, {{name}}!", context);
     %      
     %   See also matstache.Renderer, matstache.render
 

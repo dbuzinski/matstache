@@ -1,18 +1,20 @@
 function out = render(template, context, partials)
-% render - Render Mustache template to output string
+% render - Render a mustache template
 %
-%   This MATLAB function renders a template string using context data and
-%   optional named partial templates. Rendering uses a default
-%   matstache.Renderer object.
+%   Render a mustache template using context data and
+%   partial templates.
 %
-%   Field names of the partials struct are partial names referenced in the
-%   template. When you omit partials, use an empty struct with no fields.
+%   Template Context should be specified as a struct or matstache.Context object.
+%   Partials can be specified as a struct using partial names as the field
+%   names and templates as values.
 %
 %   Example:
 %
-%      tpl = "Hello, {{name}}!";
-%      ctx = struct("name","world");
-%      out = matstache.render(tpl, ctx);
+%      template = "Hello, {{name}}!";
+%      context = struct("name","world");
+%      out = matstache.render(template, context);
+%
+%   Examples: <a href="matlab:open('toolbox/examples/renderTemplates/renderTemplates.mlx')">Render Templates</a>
 %
 %   See also matstache.Renderer, matstache.Context
 

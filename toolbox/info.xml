@@ -1,7 +1,7 @@
 <productinfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="optional">
-    <?xml-stylesheet type="text/xsl"href="optional"?>
-    <!-- info.xml file for the mytoolbox toolbox -->
+    <?xml-stylesheet type="text/xsl" href="optional"?>
+    <!-- info.xml file for the Matstache toolbox -->
     <!-- Version 1.0 -->
     <!-- Copyright (date) (owner).-->
     

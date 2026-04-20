@@ -9,10 +9,10 @@ classdef Renderer
     %
     %   Example:
     %
-    %      tpl = "Hello, {{name}}!";
-    %      r = matstache.Renderer;
-    %      ctx = struct("name","world");
-    %      out = r.render(tpl, ctx);
+    %      template = "Hello, {{name}}!";
+    %      renderer = matstache.Renderer;
+    %      context = struct("name","world");
+    %      out = r.render(template, context);
     %
     %   See also matstache.render, matstache.Context
 
@@ -26,7 +26,7 @@ classdef Renderer
         end
 
         function out = render(renderer, template, context, partials)
-            % render - Render template with context and optional partials
+            % render - Render a mustache template
             %
             %   This MATLAB function parses the template, then renders it using
             %   the specified context and optional named partial templates.
@@ -75,13 +75,14 @@ classdef Renderer
             res = contextStack.lookup(key);
             % Handle lambdas
             if isa(res, "function_handle")
-                [~, ctx] = contextStack.pop();
                 if escaped
                     data = toString({res()}, key);
-                    out = out + replace(renderer.render(data, ctx, partials), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
+                    ast = renderer.Parser.parse(data);
+                    out = out + replace(renderAST(renderer, ast, contextStack, data, partials), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
                 else
                     data = toString({res()}, key);
-                    out = out + renderer.render(data, ctx, partials);
+                    ast = renderer.Parser.parse(data);
+                    out = out + renderAST(renderer, ast, contextStack, data, partials);
                 end
             elseif escaped
                 for data = iter(res)
@@ -149,8 +150,8 @@ classdef Renderer
                 partialTemplate(1:end+offset) = indentation + partialTemplate(1:end+offset);
                 partialTemplate = join(partialTemplate, newline);
             end
-            [~, ctx] = contextStack.pop();
-            out = renderer.render(partialTemplate, ctx, partials);
+            ast = renderer.Parser.parse(partialTemplate);
+            out = renderAST(renderer, ast, contextStack, partialTemplate, partials);
         end
     end
 end
