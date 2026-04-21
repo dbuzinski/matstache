@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest] #, windows-latest, macos-latest]
-        release: [R2026a] # [R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
+        platform: [ubuntu-latest, windows-latest, macos-latest]
+        release: [R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -40,8 +40,7 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: matstache-toolbox
-      # debug only
-      - run: tree
+          path: build/release/matstache.mltbx
       - uses: matlab-actions/setup-matlab@v3
         with:
           release: ${{ matrix.release }}
