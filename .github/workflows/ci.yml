@@ -25,7 +25,6 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ${{ matrix.platform }}
     strategy:
-      fail-fast: false
       matrix:
         platform: [ubuntu-latest, windows-latest, macos-latest]
         release: [R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
@@ -40,13 +39,12 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
           name: matstache-toolbox
-          path: build/release/matstache.mltbx
       - uses: matlab-actions/setup-matlab@v3
         with:
           release: ${{ matrix.release }}
       - name: Install toolbox
         uses: matlab-actions/run-command@v3
         with:
-          command: matlab.addons.install("build/release/matstache.mltbx")
+          command: matlab.addons.install("matstache.mltbx")
       - name: Run Tests
         uses: matlab-actions/run-tests@v3
