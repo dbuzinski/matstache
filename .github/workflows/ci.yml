@@ -29,10 +29,6 @@ jobs:
       matrix:
         platform: [ubuntu-latest]
         release: [R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
-        # TODO: Add back in 23a after fixing lambda tests to not
-        # TODO: Add back in 23b after matlab-actions works again
-        # use dictionary lookup
-        # release: [R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
     steps:
       - uses: actions/checkout@v6
         with:
