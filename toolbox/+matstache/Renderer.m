@@ -78,7 +78,7 @@ classdef Renderer
                 if escaped
                     data = toString({res()}, key);
                     ast = renderer.Parser.parse(data);
-                    out = out + replace(renderAST(renderer, ast, contextStack, data, partials), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
+                    out = out + replace(renderAST(renderer, ast, contextStack, data, partials), ["&", """", "<", ">", "'"], ["&amp;", "&quot;", "&lt;", "&gt;", "&#39;"]);
                 else
                     data = toString({res()}, key);
                     ast = renderer.Parser.parse(data);
@@ -106,7 +106,7 @@ classdef Renderer
                     lambdaEval = res(childContent(node, template));
                     % Render with current delimiters
                     % May want to clean this up a little in the future
-                    ast = renderer.Parser.parse(lambdaEval, Delimiters={node.LeftDelimiter, node.RightDelimiter});
+                    ast = renderer.Parser.parse(toString(lambdaEval), Delimiters={node.LeftDelimiter, node.RightDelimiter});
                     out = out + renderAST(renderer, ast, contextStack, lambdaEval, partials);
                 else
                     it = iter(res);

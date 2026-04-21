@@ -23,7 +23,9 @@ plan("doc") = Task( ...
     Actions = @buildDocDb, ...
     Dependencies = "export", ...
     Inputs = "toolbox/html/*.html", ...
-    outputs = ["toolbox/html/helpsearch-v4_en", "toolbox/html/custom_toolbox.json"]);
+    outputs = ["toolbox/html/helpsearch-v4_en/index_meta.json", ...
+        "toolbox/html/custom_toolbox.json", ...
+        "toolbox/html/helpsearch-v4_en/store/*"]);
 
 plan("package") = Task( ...
     Description = "Package toolbox", ...
@@ -35,18 +37,7 @@ plan("package") = Task( ...
 plan.DefaultTasks = ["check" "test", "package"];
 end
 
-function exportDoc(ctx)
-% Add examples folder to path
-origPath = path;
-restorePath = onCleanup(@()path(origPath));
-addpath("toolbox/examples");
-
-mlxFiles = ctx.Task.Inputs.paths();
-htmlFiles = ctx.Task.Outputs.paths();
-for i = 1:numel(mlxFiles)
-    export(mlxFiles(i), htmlFiles(i), Run=true);
-end
-end
+% Task actions and helpers
 
 function packageToolbox(ctx)
 import matlab.addons.toolbox.ToolboxOptions;
@@ -62,9 +53,31 @@ opts = ToolboxOptions(tbxFolder, "f396b9ca-fd14-46e2-878b-e053ffb5cca2", ...
     AuthorName = "David Buzinski", ...
     AuthorEmail = "davidbuzinski@gmail.com", ...
     ToolboxGettingStartedGuide = "toolbox/doc/GettingStarted.m", ...
+    ToolboxMatlabPath = [ ...
+        "toolbox", ...
+        "toolbox/html", ...
+        "toolbox/html/helpsearch-v4_en", ...
+        "toolbox/html/helpsearch-v4_en/store"], ...
     OutputFile = tbxFile);
 
 matlab.addons.toolbox.packageToolbox(opts);
+end
+
+function exportDoc(ctx)
+mlxFiles = ctx.Task.Inputs.paths();
+htmlFiles = ctx.Task.Outputs.paths();
+for i = 1:numel(mlxFiles)
+    export(mlxFiles(i), htmlFiles(i), Run=true);
+    if ~contains(mlxFiles(i), ["GettingStarted", "examples"])
+        %unescape HTML
+        content = string(fileread(htmlFiles(i)));
+        content = content.replace(["&lt;", "&gt;"], ["<", ">"]);
+        fid = fopen(htmlFiles(i), "w");
+        closeFile = onCleanup(@()fclose(fid));
+        fprintf(fid, content);
+        clear closeFile;
+    end
+end
 end
 
 function html = toHtmlFile(file)

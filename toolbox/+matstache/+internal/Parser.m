@@ -1,4 +1,6 @@
 classdef Parser < handle
+    % matstache.internal.Parser is an internal class.
+    
     properties
         TemplateCache (1,1) dictionary = dictionary(string([]), cell([]))
         Lexer (1,1) matstache.internal.Lexer = matstache.internal.Lexer()

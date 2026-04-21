@@ -1,4 +1,6 @@
 classdef Lexer < handle
+    % matstache.internal.Lexer is an internal class.
+
     properties (Access=private)
         Template (1,:) char = '';
         TemplateLength (1,1) int64 = 0;

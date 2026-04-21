@@ -3,24 +3,17 @@
     <name>Matstache</name>
     <type>toolbox</type>
     <icon>HelpIcon.DEMOS</icon>
-    <description>Live script examples for the Matstache Mustache templating toolbox. Open the MLX files under examples on the MATLAB path to run and edit.</description>
-
     <demosection>
         <label>Examples</label>
         <demoitem>
             <label>Render Templates</label>
-            <type>other</type>
+            <type>M-file</type>
             <file>html/renderTemplatesExample.html</file>
         </demoitem>
         <demoitem>
             <label>Partials and Lambdas</label>
-            <type>other</type>
+            <type>M-file</type>
             <file>html/partialsAndLambdasExample.html</file>
-        </demoitem>
-        <demoitem>
-            <label>Custom Context Class</label>
-            <type>other</type>
-            <file>html/customContextClassExample.html</file>
         </demoitem>
     </demosection>
 </demos>
