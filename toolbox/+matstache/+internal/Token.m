@@ -1,4 +1,6 @@
 classdef Token < handle
+    % matstache.internal.Token is an internal class.
+    
     properties
         Content (1,1) string
         TokenType matstache.internal.TokenType {mustBeScalarOrEmpty}

@@ -1,4 +1,6 @@
 classdef DataContext < matstache.Context
+    % matstache.internal.DataContext is an internal class.
+
     properties
         Data
     end

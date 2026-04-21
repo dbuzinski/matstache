@@ -1,4 +1,6 @@
 function tf = isTruthy(data)
+    % matstache.internal.isTruthy is an internal function.
+
     if isempty(data)
         tf = false;
     elseif ~isscalar(data)

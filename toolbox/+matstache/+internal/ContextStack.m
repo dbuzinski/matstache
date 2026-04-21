@@ -1,4 +1,6 @@
 classdef ContextStack
+    % matstache.internal.ContextStack is an internal class.
+
     properties (Access=private)
         Stack (1,:) matstache.Context;
     end

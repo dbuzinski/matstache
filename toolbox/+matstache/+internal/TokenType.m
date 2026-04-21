@@ -1,4 +1,6 @@
 classdef TokenType
+    % matstache.internal.TokenType is an internal class.
+
     enumeration
         Text
         Variable

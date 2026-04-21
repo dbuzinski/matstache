@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<demos>
+    <name>Matstache</name>
+    <type>toolbox</type>
+    <icon>HelpIcon.DEMOS</icon>
+    <demosection>
+        <label>Examples</label>
+        <demoitem>
+            <label>Render Templates</label>
+            <type>M-file</type>
+            <file>html/renderTemplatesExample.html</file>
+        </demoitem>
+        <demoitem>
+            <label>Partials and Lambdas</label>
+            <type>M-file</type>
+            <file>html/partialsAndLambdasExample.html</file>
+        </demoitem>
+    </demosection>
+</demos>

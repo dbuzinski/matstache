@@ -1,10 +1,38 @@
 classdef Renderer
-    properties
-        Parser = matstache.internal.Parser()
+    % matstache.Renderer - Mustache template renderer
+    %
+    %   The matstache.Renderer class parses template strings and substitutes
+    %   variables, sections, and partials using a matstache.Context.
+    %
+    %   Renderer methods:
+    %      render - Render template with context and optional partials
+    %
+    %   Example:
+    %
+    %      template = "Hello, {{name}}!";
+    %      renderer = matstache.Renderer;
+    %      context = struct("name","world");
+    %      out = r.render(template, context);
+    %
+    %   See also matstache.render, matstache.Context
+
+    properties (Access=private)
+        Parser
     end
 
     methods
+        function renderer = Renderer()
+            renderer.Parser = matstache.internal.Parser();
+        end
+
         function out = render(renderer, template, context, partials)
+            % render - Render a mustache template
+            %
+            %   This MATLAB function parses the template, then renders it using
+            %   the specified context and optional named partial templates.
+            %
+            %   See also matstache.render
+
             arguments (Input)
                 renderer (1,1) matstache.Renderer
                 template (1,1) string
@@ -47,13 +75,14 @@ classdef Renderer
             res = contextStack.lookup(key);
             % Handle lambdas
             if isa(res, "function_handle")
-                [~, ctx] = contextStack.pop();
                 if escaped
                     data = toString({res()}, key);
-                    out = out + replace(renderer.render(data, ctx, partials), ["&", """", "<", ">"], ["&amp;", "&quot;", "&lt;", "&gt;"]);
+                    ast = renderer.Parser.parse(data);
+                    out = out + replace(renderAST(renderer, ast, contextStack, data, partials), ["&", """", "<", ">", "'"], ["&amp;", "&quot;", "&lt;", "&gt;", "&#39;"]);
                 else
                     data = toString({res()}, key);
-                    out = out + renderer.render(data, ctx, partials);
+                    ast = renderer.Parser.parse(data);
+                    out = out + renderAST(renderer, ast, contextStack, data, partials);
                 end
             elseif escaped
                 for data = iter(res)
@@ -77,7 +106,7 @@ classdef Renderer
                     lambdaEval = res(childContent(node, template));
                     % Render with current delimiters
                     % May want to clean this up a little in the future
-                    ast = renderer.Parser.parse(lambdaEval, Delimiters={node.LeftDelimiter, node.RightDelimiter});
+                    ast = renderer.Parser.parse(toString(lambdaEval), Delimiters={node.LeftDelimiter, node.RightDelimiter});
                     out = out + renderAST(renderer, ast, contextStack, lambdaEval, partials);
                 else
                     it = iter(res);
@@ -121,8 +150,8 @@ classdef Renderer
                 partialTemplate(1:end+offset) = indentation + partialTemplate(1:end+offset);
                 partialTemplate = join(partialTemplate, newline);
             end
-            [~, ctx] = contextStack.pop();
-            out = renderer.render(partialTemplate, ctx, partials);
+            ast = renderer.Parser.parse(partialTemplate);
+            out = renderAST(renderer, ast, contextStack, partialTemplate, partials);
         end
     end
 end

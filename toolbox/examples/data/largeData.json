@@ -1,0 +1,85 @@
+{
+  "app": {
+    "name": "PerfTestApp"
+  },
+  "user": {
+    "name": "John Doe",
+    "isPremium": true,
+    "memberSince": "2018-06-21",
+    "stats": {
+      "posts": 1245,
+      "followers": 98765,
+      "following": 321
+    }
+  },
+  "projects": [
+    {
+      "name": "Project Alpha",
+      "description": "Main production system",
+      "active": true,
+      "contributors": [
+        { "name": "Alice", "role": "Engineer", "isLead": true },
+        { "name": "Bob", "role": "Engineer", "isLead": false },
+        { "name": "Charlie", "role": "Designer", "isLead": false }
+      ],
+      "tasks": [
+        {
+          "title": "Build API",
+          "status": "In Progress",
+          "tags": ["backend", "api"],
+          "comments": [
+            { "author": "Alice", "message": "Working on endpoints" },
+            { "author": "Bob", "message": "Reviewing schema" }
+          ]
+        },
+        {
+          "title": "UI Design",
+          "status": "Completed",
+          "tags": ["frontend", "design"],
+          "comments": [
+            { "author": "Charlie", "message": "Initial draft done" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "name": "Project Beta",
+      "description": "Experimental features",
+      "active": false,
+      "contributors": [
+        { "name": "Dave", "role": "Researcher", "isLead": true },
+        { "name": "Eve", "role": "Engineer", "isLead": false }
+      ],
+      "tasks": [
+        {
+          "title": "Prototype AI",
+          "status": "In Progress",
+          "tags": ["ai", "ml"],
+          "comments": []
+        }
+      ]
+    }
+  ],
+
+  "notifications": [
+    { "message": "New follower", "time": "2m ago", "unread": true },
+    { "message": "Project updated", "time": "1h ago", "unread": false },
+    { "message": "New comment", "time": "3h ago", "unread": true }
+  ],
+
+  "logs": [
+    { "level": "INFO", "message": "System started", "timestamp": "2026-04-08T10:00:00Z" },
+    { "level": "WARN", "message": "High memory usage", "timestamp": "2026-04-08T10:05:00Z" },
+    { "level": "ERROR", "message": "Failed API call", "timestamp": "2026-04-08T10:10:00Z" }
+  ],
+
+  "footer": {
+    "text": "© 2026 PerfTestApp",
+    "links": [
+      { "label": "Home", "url": "/" },
+      { "label": "About", "url": "/about" },
+      { "label": "Contact", "url": "/contact" }
+    ]
+  }
+}

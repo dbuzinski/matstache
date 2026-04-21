@@ -1,0 +1,20 @@
+{
+    "name": "David",
+    "posts": [
+        {
+            "title": "Proofs from the Book",
+            "date": "03/30/2026",
+            "summary": "Here are some of my favorite proofs of all time."
+        },
+        {
+            "title": "The Sensual (Quadratic) Form",
+            "date": "03/23/2026",
+            "summary": "Can you hear the sound of a quadratic? Can you feel it?"
+        },
+        {
+            "title": "What is a Monad? (and why you shouldn't care)",
+            "date": "03/17/2026",
+            "summary": "How are monads used in programming, and how does that relate to their mathematical definitions?"
+        }
+    ]
+}
