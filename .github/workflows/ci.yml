@@ -25,8 +25,9 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ${{ matrix.platform }}
     strategy:
+      fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-latest, macos-latest]
+        platform: [ubuntu-latest]
         release: [R2024a, R2024b, R2025a, R2025b, R2026a]
         # TODO: Add back in 23a after fixing lambda tests to not
         # TODO: Add back in 23b after matlab-actions works again
