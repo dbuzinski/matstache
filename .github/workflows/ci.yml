@@ -27,7 +27,7 @@ jobs:
     strategy:
       matrix:
         platform: [ubuntu-latest, windows-latest, macos-latest]
-        release: [R2022b, R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
+        release: [R2023a, R2023b, R2024a, R2024b, R2025a, R2025b, R2026a]
     steps:
       - uses: actions/checkout@v6
         with:
