@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, macos-latest]
+        platform: [ubuntu-latest, windows-latest]
         release: [R2024b]
     steps:
       - uses: actions/checkout@v6
@@ -50,7 +50,7 @@ jobs:
       - name: Is toolbox here
         uses: matlab-actions/run-command@v3
         with:
-          command: which matstache.Context
+          command: matlab.addons.toolbox.installedToolboxes()
       - name: Is toolbox here
         uses: matlab-actions/run-command@v3
         with:
