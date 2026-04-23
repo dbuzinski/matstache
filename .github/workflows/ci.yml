@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest, windows-latest]
-        release: [R2024b]
+        platform: [ubuntu-latest]
+        release: [R2024b, R2024a]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -54,6 +54,6 @@ jobs:
       - name: Is toolbox here
         uses: matlab-actions/run-command@v3
         with:
-          command: matstache.Renderer
+          command: path
       - name: Run Tests
         uses: matlab-actions/run-tests@v3
