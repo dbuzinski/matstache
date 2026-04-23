@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest]
-        release: [R2024b, R2026a]
+        platform: [ubuntu-latest, macos-latest]
+        release: [R2024b]
     steps:
       - uses: actions/checkout@v6
         with:
