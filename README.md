@@ -118,4 +118,4 @@ fprintf("Cached render took %f seconds.\n", t);
 
 Requires **MATLAB R2023a** or later.
 
-Install the **`.mltbx`** from the [MATLAB File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/) or using the Add-On Explorer.
+Install the **`.mltbx`** from the [MATLAB File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/183741-matstache) or using the Add-On Explorer.
