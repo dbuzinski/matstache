@@ -50,7 +50,7 @@ jobs:
       - name: Is toolbox here
         uses: matlab-actions/run-command@v3
         with:
-          command: matlab.addons.toolbox.installedToolboxes()
+          command: disp(matlab.addons.toolbox.installedToolboxes())
       - name: Is toolbox here
         uses: matlab-actions/run-command@v3
         with:
