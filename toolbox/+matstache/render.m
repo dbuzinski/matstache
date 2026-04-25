@@ -14,8 +14,6 @@ function out = render(template, context, partials)
 %      context = struct("name","world");
 %      out = matstache.render(template, context);
 %
-%   Examples: <a href="matlab:open('toolbox/examples/renderTemplates/renderTemplates.mlx')">Render Templates</a>
-%
 %   See also matstache.Renderer, matstache.Context
 
 arguments (Input)
