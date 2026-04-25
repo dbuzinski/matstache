@@ -22,14 +22,13 @@ jobs:
 
   integration-test:
     needs: build
-    if: github.event_name == 'push'
+    # if: github.event_name == 'push'
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         platform: [ubuntu-latest]
-        # todo debug toolbox path on R2024b
-        release: [R2023a, R2023b, R2024a, R2025a, R2025b, R2026a]
+        release: [R2024b, R2024a]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -47,6 +46,14 @@ jobs:
       - name: Install toolbox
         uses: matlab-actions/run-command@v3
         with:
-          command: matlab.addons.install("matstache.mltbx")
+          command: matlab.addons.install("matstache.mltbx", true)
+      - name: Is toolbox here
+        uses: matlab-actions/run-command@v3
+        with:
+          command: disp(matlab.addons.toolbox.installedToolboxes())
+      - name: Is toolbox here
+        uses: matlab-actions/run-command@v3
+        with:
+          command: path
       - name: Run Tests
         uses: matlab-actions/run-tests@v3
