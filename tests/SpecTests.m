@@ -28,13 +28,16 @@ specFiles = [ "testdata/spec/specs/comments.json", ...
     "testdata/spec/specs/sections.json" ...
     "testdata/spec/specs/~lambdas.json" ...
 ];
-testData = {};
+testData = struct();
 for file = specFiles
     jsonData = jsondecode(fileread(file));
     tests = jsonData.tests(:)';
     if ~iscell(tests)
         tests = num2cell(tests);
     end
-    testData = [testData, tests];
+    for i = 1:numel(tests)
+        test = tests{i};
+        testData.(matlab.lang.makeValidName(test.name)) = test;
+    end
 end
 end

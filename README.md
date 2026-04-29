@@ -42,7 +42,7 @@ out = matstache.render(template, context, partials);
 
 ### Lambdas
 
-Lambdas can be included by as **`function_handle`** values in the context.
+Lambdas can be included by as `function_handle` values in the context.
 
 - **Variable Tags:** the handle must be callable with no arguments. The returned value is rendered as a Mustache template.
 - **Sections:** the handle must accept one argument, specified as a scalar `string`. At render time, it is called with the inner section text. The returned string replaces the section.
@@ -93,7 +93,7 @@ out = matstache.render("Greeting for {{name}}: {{greeting}}", context);
 
 ### Caching
 
-If the same template will be rendered many times, it can be more efficient to use a `matstache.Renderer` instance, which has caches parsed templates. This can have huge performance benefits for large templates or templates that will be rendered many times. The rendering is still dynamic and depends on the context passed to each `render` call.
+If the same template will be rendered many times, it can be more efficient to use a `matstache.Renderer` instance, which automatically caches parsed templates. This can have huge performance benefits for large templates or templates that will be rendered many times. The rendering is still dynamic and depends on the context passed to each `render` call.
 
 ```matlab
 % Instantiate a renderer for reuse
@@ -116,6 +116,6 @@ fprintf("Cached render took %f seconds.\n", t);
 
 ## Installation
 
-Requires **MATLAB R2023a** or later.
+Requires MATLAB R2023a or later.
 
-Install the **`.mltbx`** from the [MATLAB File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/183741-matstache) or using the Add-On Explorer.
+Install the `.mltbx` from the [MATLAB File Exchange](https://www.mathworks.com/matlabcentral/fileexchange/183741-matstache) or using the Add-On Explorer.
