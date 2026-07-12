@@ -47,13 +47,5 @@ jobs:
         uses: matlab-actions/run-command@v3
         with:
           command: matlab.addons.toolbox.installToolbox("matstache.mltbx", true); rehash("toolbox")
-      - name: Is toolbox here
-        uses: matlab-actions/run-command@v3
-        with:
-          command: disp(matlab.addons.toolbox.installedToolboxes())
-      - name: Is toolbox here
-        uses: matlab-actions/run-command@v3
-        with:
-          command: path
       - name: Run Tests
         uses: matlab-actions/run-tests@v3
