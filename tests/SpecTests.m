@@ -27,7 +27,7 @@ specFiles = [ "testdata/spec/specs/comments.json", ...
     "testdata/spec/specs/partials.json", ...
     "testdata/spec/specs/sections.json" ...
     "testdata/spec/specs/~lambdas.json" ...
-];
+    ];
 testData = struct();
 for file = specFiles
     jsonData = jsondecode(fileread(file));
@@ -37,7 +37,8 @@ for file = specFiles
     end
     for i = 1:numel(tests)
         test = tests{i};
-        testData.(matlab.lang.makeValidName(test.name)) = test;
+        [~, featureName] = fileparts(file);
+        testData.(matlab.lang.makeValidName(featureName + "_" +test.name)) = test;
     end
 end
 end

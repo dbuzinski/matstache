@@ -103,7 +103,7 @@ classdef LexerTests < matlab.unittest.TestCase
         function tokenizesPartials(testCase)
             lexer = matstache.internal.Lexer();
             rawText = '{{> partial}}';
-            expected = [Token(" partial", "Partial", 1, 1, 1, 13, 1, 13)];
+            expected = Token(" partial", "Partial", 1, 1, 1, 13, 1, 13);
             actual = lexer.tokenize(rawText);
             testCase.verifyEqual(expected, actual);
         end

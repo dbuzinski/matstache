@@ -1,0 +1,38 @@
+name = "Matstache"
+
+[project]
+description = "A MATLAB implementation of the mustache template language"
+
+[folders]
+path = [
+    "src",
+    "src/examples",
+    "src/html",
+    "src/html/helpsearch-v4_en",
+    "src/html/helpsearch-v4_en/store",
+]
+test = [
+    "tests",
+]
+
+[[package]]
+unique-id = "96d18c49-8ae4-40c7-b41c-132969008edf"
+output-file-name = "matstache.mltbx"
+output-folder = "release"
+name = "matstache"
+supported-platforms = [
+    "windows",
+    "linux",
+    "macos",
+]
+display-name = "Matstache"
+version = "1.0.0"
+id = "06e3ca72-4eec-4e71-9477-0968080d57ea"
+use-license-bsd = false
+package-root = "src"
+provider.name = "David Buzinski"
+provider.email = "davidbuzinski@gmail.com"
+summary = "Mustache templates for MATLAB"
+description = "Mustache templates for MATLAB."
+getting-started-file = "src/doc/GettingStarted.m"
+
