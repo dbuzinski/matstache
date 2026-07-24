@@ -46,4 +46,4 @@ jobs:
       - name: Install toolbox & run tests
         uses: matlab-actions/run-command@v3
         with:
-          command: matlab.addons.toolbox.installToolbox("matstache.mltbx"); runtests(IncludeSubfolders=true); display(results); assertSuccess(results);
+          command: matlab.addons.toolbox.installToolbox("matstache.mltbx"); results = runtests(IncludeSubfolders=true); display(results); assertSuccess(results);
