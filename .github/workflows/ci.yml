@@ -13,6 +13,7 @@ jobs:
           submodules: true
       - uses: matlab-actions/setup-matlab@v3
         with:
+          release: latest-including-prerelease
           cache: true
       - uses: matlab-actions/run-build@v3
       - uses: actions/upload-artifact@v7
