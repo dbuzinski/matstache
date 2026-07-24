@@ -44,9 +44,7 @@ jobs:
       - uses: matlab-actions/setup-matlab@v3
         with:
           release: ${{ matrix.release }}
-      - name: Install toolbox
+      - name: Install toolbox & run tests
         uses: matlab-actions/run-command@v3
         with:
-          command: matlab.addons.toolbox.installToolbox("matstache.mltbx")
-      - name: Run Tests
-        uses: matlab-actions/run-tests@v3
+          command: matlab.addons.toolbox.installToolbox("matstache.mltbx"); results = runtests(IncludeSubfolders=true); display(results); assertSuccess(results);
