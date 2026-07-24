@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding="utf-8"?>
+
+<toc version="2.0">
+    <tocitem target="GettingStarted.html">Matstache Toolbox
+        <tocitem target="GettingStarted.html" image="HelpIcon.GETTING_STARTED">
+            Getting Started with the Matstache Toolbox
+        </tocitem>
+        <tocitem target="Functions.html">Functions
+            <tocitem target="render.html">matstache.render</tocitem>
+        </tocitem>
+        <tocitem target="Classes.html">Classes
+            <tocitem target="Renderer.html">matstache.Renderer</tocitem>
+            <tocitem target="Context.html">matstache.Context</tocitem>
+        </tocitem>
+        <tocitem target="LICENSE.html">License</tocitem>
+        <tocitem target="ReleaseNotes.html">Release Notes</tocitem>
+    </tocitem>
+</toc>
