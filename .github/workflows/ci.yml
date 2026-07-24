@@ -23,6 +23,7 @@ jobs:
 
   integration-test:
     needs: build
+    if: github.event_name == 'push'
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
