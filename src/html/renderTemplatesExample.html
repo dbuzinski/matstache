@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB 2026b"><title>Rendering Templates</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 10px 10px 5px 26px; padding: 0px; line-height: 28.8px; min-height: 0px; white-space: pre; color: rgb(192, 76, 11); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: 400; text-align: left;  }
+._richTextNode {white-space: break-spaces;}
+.S1 { margin: 10px 10px 5px 26px; padding: 0px; line-height: 25px; min-height: 0px; white-space: pre; color: rgb(33, 33, 33); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 20px; font-weight: 700; text-align: left;  }
+.S2 { margin: 2px 10px 9px 26px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre; color: rgb(33, 33, 33); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: 400; text-align: left;  }
+.CodeBlock { background-color: #F5F5F5; margin: 10px 0 10px 0; }
+.S3 { border-left: 0px none rgb(33, 33, 33); border-right: 0px none rgb(33, 33, 33); border-top: 0px none rgb(33, 33, 33); border-bottom: 0px none rgb(33, 33, 33); border-radius: 0px; padding: 0px 45px 0px 21px; line-height: 18.004px; min-height: 0px; white-space: nowrap; color: rgb(33, 33, 33); font-family: Menlo, Monaco, Consolas, "Courier New", monospace, Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px; text-indent: 0px;  }
+.S4 { color: rgb(33, 33, 33); padding: 10px 0px 6px 17px; background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box; font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px; overflow-x: hidden; line-height: 17.234px;  }
+/* Copyright 2014-2025 The MathWorks, Inc. *//* Styling that is common to warnings and errors is in diagnosticOutput.css */.embeddedOutputsErrorElement {    min-height: 18px;    max-height: 550px;}
+.embeddedOutputsErrorElement .diagnosticMessage-errorType {    overflow: auto;}
+.embeddedOutputsErrorElement.inlineElement {}
+.embeddedOutputsErrorElement.rightPaneElement {}
+/* Copyright 2014-2025 The MathWorks, Inc. *//* Styling that is common to warnings and errors is in diagnosticOutput.css */.embeddedOutputsWarningElement {    min-height: 18px;    max-height: 550px;}
+.embeddedOutputsWarningElement .diagnosticMessage-warningType {    overflow: auto;}
+.embeddedOutputsWarningElement.inlineElement {}
+.embeddedOutputsWarningElement.rightPaneElement {}
+/* Copyright 2015-2025 The MathWorks, Inc. *//* In this file, styles are not scoped to rtcContainer since they could be in the Dojo Tooltip */.diagnosticMessage-wrapper {    /* Since this selector may be used outside RTC Container without RTC semantic variables, a    default value is used. An example here is the App Designer's alert tooltip. */    font-family: var(--rtc-output-font-family, Menlo, Monaco, Consolas, "Courier New", monospace);    font-size: var(--rtc-output-font-size, 12px);}
+.diagnosticMessage-wrapper.diagnosticMessage-warningType {    /*This fallback value will be used for appdesigner warnings*/    color: var(--rtc-warning-output-color, var(--mw-color-matlabWarning));}
+.diagnosticMessage-wrapper.diagnosticMessage-warningType a {    /*This fallback value will be used for appdesigner warnings*/    color: var(--rtc-warning-output-color, var(--mw-color-matlabWarning));    text-decoration: underline;}
+.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-warningType,.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-warningType a {    color: var(--mw-color-matlabWarning) !important;}
+.diagnosticMessage-wrapper.diagnosticMessage-errorType {    /*This fallback value will be used in appdesigner error tooltip text*/    color: var(--rtc-error-output-color, var(--mw-color-matlabErrors));}
+.diagnosticMessage-wrapper.diagnosticMessage-errorType a {    /*This fallback value will be used in appdesigner error tooltip text*/    color: var(--rtc-error-output-color, var(--mw-color-matlabErrors));    text-decoration: underline;}
+.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-errorType,.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-errorType a {    color: var(--mw-color-matlabErrors) !important;}
+.diagnosticMessage-wrapper .diagnosticMessage-messagePart,.diagnosticMessage-wrapper .diagnosticMessage-causePart {    white-space: pre-wrap;}
+.diagnosticMessage-wrapper .diagnosticMessage-stackPart {    white-space: pre;}
+/* Copyright 2014-2025 The MathWorks, Inc. */.embeddedOutputsTextElement,.embeddedOutputsVariableStringElement {    white-space: pre;    word-wrap:  initial;    min-height: 18px;    max-height: 550px;}
+.embeddedOutputsTextElement .textElement,.embeddedOutputsVariableStringElement .textElement {    overflow: auto;}
+.textElement,.rtcDataTipElement .textElement {    padding-top: 2px;}
+.embeddedOutputsTextElement.inlineElement,.embeddedOutputsVariableStringElement.inlineElement {}
+.inlineElement .textElement {}
+.embeddedOutputsTextElement.rightPaneElement,.embeddedOutputsVariableStringElement.rightPaneElement {    min-height: 16px;}
+.rightPaneElement .textElement {    padding-top: 2px;    padding-left: 9px;}
+.embeddedOutputsVariableStringElement { width: initial !important; }
+.S5 { margin: 10px 10px 5px 26px; padding: 0px; line-height: 20.4px; min-height: 0px; white-space: pre; color: rgb(33, 33, 33); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 17px; font-weight: 700; text-align: left;  }</style></head><body><div class = rtcContent><h1  class = 'S0'><span class="_richTextNode">Rendering Templates</span></h1><h2  class = 'S1'><span class="_richTextNode">Render your first template</span></h2><div  class = 'S2'><span class="_richTextNode">Create a template with a variable tag </span><span class="_richTextNode" style=' font-family: monospace;'>name</span><span class="_richTextNode"> that gets interpolated from the given context. Try changing the value for </span><span class="_richTextNode" style=' font-family: monospace;'>name</span><span class="_richTextNode"> and see what happens.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Define a template</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >template = </span><span style="color: rgb(167, 9, 245);">"Hello {{name}}!"</span><span >;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Define a context</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context = struct(</span><span style="color: rgb(167, 9, 245);">"name"</span><span >, </span><span style="color: rgb(167, 9, 245);">"world"</span><span >);</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Render the template</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >out = matstache.render(template, context);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(out);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="6A707201" prevent-scroll="true" data-testid="output_0" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="17" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">Hello world!</div></div></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Try with a different context</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context = struct(</span><span style="color: rgb(167, 9, 245);">"name"</span><span >, </span><span style="color: rgb(167, 9, 245);">"matstache"</span><span >);</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Re-render the template</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >out = matstache.render(template, context);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(out);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="B2EA3C80" prevent-scroll="true" data-testid="output_1" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="17" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">Hello matstache!</div></div></div></div></div><h3  class = 'S5'><span class="_richTextNode">Rendering templates from files</span></h3><div  class = 'S2'><span class="_richTextNode">You can load templates from files using </span><span class="_richTextNode" style=' font-family: monospace;'>fileread</span><span class="_richTextNode">. You can also load context from files using </span><span class="_richTextNode" style=' font-family: monospace;'>fileread</span><span class="_richTextNode"> and </span><span class="_richTextNode" style=' font-family: monospace;'>jsondecode</span><span class="_richTextNode">.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Load a template from the file views/page.mustache</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >template = fileread(fullfile(</span><span style="color: rgb(167, 9, 245);">"views"</span><span >, </span><span style="color: rgb(167, 9, 245);">"page.mustache"</span><span >));</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(template);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="9A2C7A45" prevent-scroll="true" data-testid="output_2" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="135" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;h1&gt;{{ title }}&lt;/h1&gt;
+&lt;div&gt;
+    &lt;h2&gt;{{ username }}&lt;/h2&gt;
+    &lt;div&gt;
+        &lt;h3&gt;Interests&lt;/h3&gt;
+        &lt;p&gt;Likes: {{ likes }}.&lt;/p&gt;
+        &lt;p&gt;Dislikes: {{ dislikes }}.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div></div></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Load data from the file data/pageData.json</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context = jsondecode(fileread(fullfile(</span><span style="color: rgb(167, 9, 245);">"data"</span><span >, </span><span style="color: rgb(167, 9, 245);">"pageData.json"</span><span >)));</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(context);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="F0E1FBB2" prevent-scroll="true" data-testid="output_3" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="61" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">       title: 'Profile'
+    username: 'Charlie'
+       likes: 'Milk steak, ghouls'
+    dislikes: 'Peoples' knees'</div></div></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Render the page</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >out = matstache.render(template, context);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(out);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="71341AC9" prevent-scroll="true" data-testid="output_4" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="135" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;h1&gt;Profile&lt;/h1&gt;
+&lt;div&gt;
+    &lt;h2&gt;Charlie&lt;/h2&gt;
+    &lt;div&gt;
+        &lt;h3&gt;Interests&lt;/h3&gt;
+        &lt;p&gt;Likes: Milk steak, ghouls.&lt;/p&gt;
+        &lt;p&gt;Dislikes: Peoples' knees.&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div></div></div></div></div><h2  class = 'S1'><span class="_richTextNode">Use a </span><span class="_richTextNode" style=' font-family: monospace;'>matstache.Renderer</span><span class="_richTextNode"> to improve performance</span></h2><div  class = 'S2'><span class="_richTextNode" style=' font-family: monospace;'>matstache.render</span><span class="_richTextNode"> is a convenience function that always parses and renders templates.</span></div><div  class = 'S2'><span class="_richTextNode">If you render the same templates many times, consider using a </span><span class="_richTextNode" style=' font-family: monospace;'>matstache.Renderer</span><span class="_richTextNode"> instance so the parsed template is cached. This can result in huge performance increases for large templates.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >renderer = matstache.Renderer;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >template = </span><span style="color: rgb(167, 9, 245);">"Hello {{name}}!"</span><span >;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context = struct(</span><span style="color: rgb(167, 9, 245);">"name"</span><span >,</span><span style="color: rgb(167, 9, 245);">"world"</span><span >);</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >n = 2000;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Without caching</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >tic</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(14, 0, 255);">for </span><span >i = 1:n</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >    matstache.render(template, context);</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(14, 0, 255);">end</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >tNoCache = toc;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% With caching</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >tic</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(14, 0, 255);">for </span><span >i = 1:n</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >    renderer.render(template, context);</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(14, 0, 255);">end</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >tCache = toc;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >fprintf(</span><span style="color: rgb(167, 9, 245);">"Renders: %d\nNo cache: %g s\nCached:  %g s\n"</span><span >, n, tNoCache, tCache);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="018F96E5" prevent-scroll="true" data-testid="output_5" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="46" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">Renders: 2000
+No cache: 2.25661 s
+Cached:  0.11027 s</div></div></div></div></div>
+<br>
+<!-- 
+##### SOURCE BEGIN #####
+%% Rendering Templates
+%% Render your first template
+% Create a template with a variable tag |name| that gets interpolated from the 
+% given context. Try changing the value for |name| and see what happens.
+
+% Define a template
+template = "Hello {{name}}!";
+
+% Define a context
+context = struct("name", "world");
+
+% Render the template
+out = matstache.render(template, context);
+disp(out);
+% Try with a different context
+context = struct("name", "matstache");
+
+% Re-render the template
+out = matstache.render(template, context);
+disp(out);
+% Rendering templates from files
+% You can load templates from files using |fileread|. You can also load context 
+% from files using |fileread| and |jsondecode|.
+
+% Load a template from the file views/page.mustache
+template = fileread(fullfile("views", "page.mustache"));
+disp(template);
+% Load data from the file data/pageData.json
+context = jsondecode(fileread(fullfile("data", "pageData.json")));
+disp(context);
+% Render the page
+out = matstache.render(template, context);
+disp(out);
+%% Use a |matstache.Renderer| to improve performance
+% |matstache.render| is a convenience function that always parses and renders 
+% templates.
+% 
+% If you render the same templates many times, consider using a |matstache.Renderer| 
+% instance so the parsed template is cached. This can result in huge performance 
+% increases for large templates.
+
+renderer = matstache.Renderer;
+template = "Hello {{name}}!";
+context = struct("name","world");
+
+n = 2000;
+
+% Without caching
+tic
+for i = 1:n
+    matstache.render(template, context);
+end
+tNoCache = toc;
+
+% With caching
+tic
+for i = 1:n
+    renderer.render(template, context);
+end
+tCache = toc;
+
+fprintf("Renders: %d\nNo cache: %g s\nCached:  %g s\n", n, tNoCache, tCache);
+##### SOURCE END #####
+-->
+</div></body></html>

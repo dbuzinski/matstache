@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+    "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge,IE=9,chrome=1"><meta name="generator" content="MATLAB 2026b"><title>Using Lambdas and Partials</title><style type="text/css">.rtcContent { padding: 30px; } .S0 { margin: 10px 10px 5px 26px; padding: 0px; line-height: 28.8px; min-height: 0px; white-space: pre; color: rgb(192, 76, 11); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 24px; font-weight: 400; text-align: left;  }
+._richTextNode {white-space: break-spaces;}
+.S1 { margin: 10px 10px 5px 26px; padding: 0px; line-height: 25px; min-height: 0px; white-space: pre; color: rgb(33, 33, 33); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 20px; font-weight: 700; text-align: left;  }
+.S2 { margin: 2px 10px 9px 26px; padding: 0px; line-height: 21px; min-height: 0px; white-space: pre; color: rgb(33, 33, 33); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 14px; font-weight: 400; text-align: left;  }
+.CodeBlock { background-color: #F5F5F5; margin: 10px 0 10px 0; }
+.S3 { border-left: 0px none rgb(33, 33, 33); border-right: 0px none rgb(33, 33, 33); border-top: 0px none rgb(33, 33, 33); border-bottom: 0px none rgb(33, 33, 33); border-radius: 0px; padding: 0px 45px 0px 21px; line-height: 18.004px; min-height: 0px; white-space: nowrap; color: rgb(33, 33, 33); font-family: Menlo, Monaco, Consolas, "Courier New", monospace, Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px; text-indent: 0px;  }
+.S4 { color: rgb(33, 33, 33); padding: 10px 0px 6px 17px; background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box; font-family: Menlo, Monaco, Consolas, "Courier New", monospace; font-size: 14px; overflow-x: hidden; line-height: 17.234px;  }
+/* Copyright 2014-2025 The MathWorks, Inc. *//* Styling that is common to warnings and errors is in diagnosticOutput.css */.embeddedOutputsErrorElement {    min-height: 18px;    max-height: 550px;}
+.embeddedOutputsErrorElement .diagnosticMessage-errorType {    overflow: auto;}
+.embeddedOutputsErrorElement.inlineElement {}
+.embeddedOutputsErrorElement.rightPaneElement {}
+/* Copyright 2014-2025 The MathWorks, Inc. *//* Styling that is common to warnings and errors is in diagnosticOutput.css */.embeddedOutputsWarningElement {    min-height: 18px;    max-height: 550px;}
+.embeddedOutputsWarningElement .diagnosticMessage-warningType {    overflow: auto;}
+.embeddedOutputsWarningElement.inlineElement {}
+.embeddedOutputsWarningElement.rightPaneElement {}
+/* Copyright 2015-2025 The MathWorks, Inc. *//* In this file, styles are not scoped to rtcContainer since they could be in the Dojo Tooltip */.diagnosticMessage-wrapper {    /* Since this selector may be used outside RTC Container without RTC semantic variables, a    default value is used. An example here is the App Designer's alert tooltip. */    font-family: var(--rtc-output-font-family, Menlo, Monaco, Consolas, "Courier New", monospace);    font-size: var(--rtc-output-font-size, 12px);}
+.diagnosticMessage-wrapper.diagnosticMessage-warningType {    /*This fallback value will be used for appdesigner warnings*/    color: var(--rtc-warning-output-color, var(--mw-color-matlabWarning));}
+.diagnosticMessage-wrapper.diagnosticMessage-warningType a {    /*This fallback value will be used for appdesigner warnings*/    color: var(--rtc-warning-output-color, var(--mw-color-matlabWarning));    text-decoration: underline;}
+.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-warningType,.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-warningType a {    color: var(--mw-color-matlabWarning) !important;}
+.diagnosticMessage-wrapper.diagnosticMessage-errorType {    /*This fallback value will be used in appdesigner error tooltip text*/    color: var(--rtc-error-output-color, var(--mw-color-matlabErrors));}
+.diagnosticMessage-wrapper.diagnosticMessage-errorType a {    /*This fallback value will be used in appdesigner error tooltip text*/    color: var(--rtc-error-output-color, var(--mw-color-matlabErrors));    text-decoration: underline;}
+.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-errorType,.rtcThemeDefaultOverride .diagnosticMessage-wrapper.diagnosticMessage-errorType a {    color: var(--mw-color-matlabErrors) !important;}
+.diagnosticMessage-wrapper .diagnosticMessage-messagePart,.diagnosticMessage-wrapper .diagnosticMessage-causePart {    white-space: pre-wrap;}
+.diagnosticMessage-wrapper .diagnosticMessage-stackPart {    white-space: pre;}
+/* Copyright 2014-2025 The MathWorks, Inc. */.embeddedOutputsTextElement,.embeddedOutputsVariableStringElement {    white-space: pre;    word-wrap:  initial;    min-height: 18px;    max-height: 550px;}
+.embeddedOutputsTextElement .textElement,.embeddedOutputsVariableStringElement .textElement {    overflow: auto;}
+.textElement,.rtcDataTipElement .textElement {    padding-top: 2px;}
+.embeddedOutputsTextElement.inlineElement,.embeddedOutputsVariableStringElement.inlineElement {}
+.inlineElement .textElement {}
+.embeddedOutputsTextElement.rightPaneElement,.embeddedOutputsVariableStringElement.rightPaneElement {    min-height: 16px;}
+.rightPaneElement .textElement {    padding-top: 2px;    padding-left: 9px;}
+.embeddedOutputsVariableStringElement { width: initial !important; }
+.S5 { margin: 10px 10px 5px 26px; padding: 0px; line-height: 20.4px; min-height: 0px; white-space: pre; color: rgb(33, 33, 33); font-family: Helvetica, Arial, sans-serif, Helvetica, Arial, sans-serif; font-style: normal; font-size: 17px; font-weight: 700; text-align: left;  }</style></head><body><div class = rtcContent><h1  class = 'S0'><span class="_richTextNode">Using Lambdas and Partials</span></h1><h2  class = 'S1'><span class="_richTextNode">Use Partials to Include Templates Within Templates</span></h2><div  class = 'S2'><span class="_richTextNode">We can create a template </span><span class="_richTextNode" style=' font-family: monospace;'>blog.mustache</span><span class="_richTextNode"> for our blog that has a list of posts. If we want to reuse the template for a post in other parts of our site, we can store it in another template and use a partial.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Load a template</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >template = fileread(fullfile(</span><span style="color: rgb(167, 9, 245);">"views"</span><span >, </span><span style="color: rgb(167, 9, 245);">"blog.mustache"</span><span >));</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(template);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="7D88345C" prevent-scroll="true" data-testid="output_0" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="135" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;div&gt;
+    &lt;h1&gt;{{&amp;name}}'s Blog&lt;/h1&gt;
+    &lt;h2&gt;Posts:&lt;/h2&gt;
+    &lt;div&gt;
+        {{#posts}}
+            {{&gt;post}}
+        {{/posts}}
+    &lt;/div&gt;
+&lt;/div&gt;</div></div></div></div></div><div  class = 'S2'><span class="_richTextNode">We can load the template </span><span class="_richTextNode" style=' font-family: monospace;'>post.mustache</span><span class="_richTextNode"> to display each post in our list of posts and include that in our blog template using a partial tag.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Load partials to a struct</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >partials = struct(</span><span style="color: rgb(167, 9, 245);">"post"</span><span >, fileread(fullfile(</span><span style="color: rgb(167, 9, 245);">"views"</span><span >, </span><span style="color: rgb(167, 9, 245);">"post.mustache"</span><span >)));</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(partials.post);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="5D2E4023" prevent-scroll="true" data-testid="output_1" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="76" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;div&gt;
+    &lt;h3&gt;{{title}}&lt;/h3&gt;
+    &lt;p&gt;Author: {{&amp;name}}. Created: {{date}}.&lt;/p&gt;
+    &lt;p&gt;Summary: {{summary}}&lt;/p&gt;
+&lt;/div&gt;</div></div></div></div></div><div  class = 'S2'><span class="_richTextNode">We can load the data containing all posts for a given author. We can retrieve this from a database or another service. For this example, we will load the data from a json file.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Define a context</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >jsonData = fileread(fullfile(</span><span style="color: rgb(167, 9, 245);">"data"</span><span >, </span><span style="color: rgb(167, 9, 245);">"blog.json"</span><span >));</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context = jsondecode(jsonData);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(jsonData);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="A054D459" prevent-scroll="true" data-testid="output_2" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="297" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 308px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">{
+    "name": "David",
+    "posts": [
+        {
+            "title": "Proofs from the Book",
+            "date": "03/30/2026",
+            "summary": "Here are some of my favorite proofs of all time."
+        },
+        {
+            "title": "The Sensual (Quadratic) Form",
+            "date": "03/23/2026",
+            "summary": "Can you hear the sound of a quadratic? Can you feel it?"
+        },
+        {
+            "title": "What is a Monad? (and why you shouldn't care)",
+            "date": "03/17/2026",
+            "summary": "How are monads used in programming, and how does that relate to their mathematical definitions?"
+        }
+    ]
+}</div></div></div></div></div><div  class = 'S2'><span class="_richTextNode">Partials are rendered at runtime and inherit the calling context so we can use </span><span class="_richTextNode" style=' font-family: monospace;'>name</span><span class="_richTextNode"> from our context in both the blog template and the post template.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Render the template</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >out = matstache.render(template, context, partials);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(out);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="00BF9B3A" prevent-scroll="true" data-testid="output_3" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="312" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 323px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;div&gt;
+    &lt;h1&gt;David's Blog&lt;/h1&gt;
+    &lt;h2&gt;Posts:&lt;/h2&gt;
+    &lt;div&gt;
+            &lt;div&gt;
+                &lt;h3&gt;Proofs from the Book&lt;/h3&gt;
+                &lt;p&gt;Author: David. Created: 03/30/2026.&lt;/p&gt;
+                &lt;p&gt;Summary: Here are some of my favorite proofs of all time.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;h3&gt;The Sensual (Quadratic) Form&lt;/h3&gt;
+                &lt;p&gt;Author: David. Created: 03/23/2026.&lt;/p&gt;
+                &lt;p&gt;Summary: Can you hear the sound of a quadratic? Can you feel it?&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;h3&gt;What is a Monad? (and why you shouldn't care)&lt;/h3&gt;
+                &lt;p&gt;Author: David. Created: 03/17/2026.&lt;/p&gt;
+                &lt;p&gt;Summary: How are monads used in programming, and how does that relate to their mathematical definitions?&lt;/p&gt;
+            &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div></div></div></div></div><h2  class = 'S1'><span class="_richTextNode">Use Lambdas to Dynamically Modify Templates</span></h2><h3  class = 'S5'><span class="_richTextNode">Variable lambdas</span></h3><div  class = 'S2'><span class="_richTextNode">Section lambdas can be used to modify or replace content within sections.</span></div><div  class = 'S2'><span class="_richTextNode">Function handles with zero inputs can be used as a variable tag. It should return a Mustache template as a string scalar. The lambda will be evaluated, and the returned template will be rendered using the current context.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Using a lambda, we can transform name to make it bold everywhere</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context.rawName = context.name;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context.name = @() </span><span style="color: rgb(167, 9, 245);">"&lt;b&gt;{{rawName}}&lt;/b&gt;"</span><span >;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Render the page</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >out = matstache.render(template, context, partials);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(out);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="CF1C46FF" prevent-scroll="true" data-testid="output_4" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="312" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 323px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;div&gt;
+    &lt;h1&gt;&lt;b&gt;David&lt;/b&gt;'s Blog&lt;/h1&gt;
+    &lt;h2&gt;Posts:&lt;/h2&gt;
+    &lt;div&gt;
+            &lt;div&gt;
+                &lt;h3&gt;Proofs from the Book&lt;/h3&gt;
+                &lt;p&gt;Author: &lt;b&gt;David&lt;/b&gt;. Created: 03/30/2026.&lt;/p&gt;
+                &lt;p&gt;Summary: Here are some of my favorite proofs of all time.&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;h3&gt;The Sensual (Quadratic) Form&lt;/h3&gt;
+                &lt;p&gt;Author: &lt;b&gt;David&lt;/b&gt;. Created: 03/23/2026.&lt;/p&gt;
+                &lt;p&gt;Summary: Can you hear the sound of a quadratic? Can you feel it?&lt;/p&gt;
+            &lt;/div&gt;
+            &lt;div&gt;
+                &lt;h3&gt;What is a Monad? (and why you shouldn't care)&lt;/h3&gt;
+                &lt;p&gt;Author: &lt;b&gt;David&lt;/b&gt;. Created: 03/17/2026.&lt;/p&gt;
+                &lt;p&gt;Summary: How are monads used in programming, and how does that relate to their mathematical definitions?&lt;/p&gt;
+            &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</div></div></div></div></div><h3  class = 'S5'><span class="_richTextNode">Section lambdas</span></h3><div  class = 'S2'><span class="_richTextNode">Section lambdas can be used to modify or replace content within sections.</span></div><div  class = 'S2'><span class="_richTextNode">Function handles with </span><span class="_richTextNode" style=' font-weight: bold;'>one input</span><span class="_richTextNode"> can be used as a section tag. It should return a Mustache template as a string scalar. The lambda will be evaluated on the inner content of the section, and the returned template will be rendered using the current context.</span></div><div class="CodeBlock"><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Using a section lambda, we can wrap the section’s inner template (or replace it entirely).</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >context.posts = @(inner) </span><span style="color: rgb(167, 9, 245);">"        Nothing to see here!" </span><span >+ newline;</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'>&nbsp;</div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span style="color: rgb(0, 128, 19);">% Render the page</span></span></div></div><div class="inlineWrapper"><div  class = 'S3'><span style="white-space: pre"><span >out = matstache.render(template, context, partials);</span></span></div></div><div class="inlineWrapper outputs"><div  class = 'S3'><span style="white-space: pre"><span >disp(out);</span></span></div><div  class = 'S4'><div class="inlineElement eoOutputWrapper disableDefaultGestureHandling embeddedOutputsTextElement" uid="072DEB2E" prevent-scroll="true" data-testid="output_5" style="width: 1148.14px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;" tabindex="-1"><div class="textElement eoOutputContent" tabindex="-1" data-previous-available-width="1111" data-previous-scroll-height="105" data-hashorizontaloverflow="false" role="article" aria-roledescription="Use Browse Mode to explore " aria-description="text output " style="max-height: 261px; white-space: pre; font-style: normal; color: rgb(33, 33, 33); font-size: 12px;">&lt;div&gt;
+    &lt;h1&gt;&lt;b&gt;David&lt;/b&gt;'s Blog&lt;/h1&gt;
+    &lt;h2&gt;Posts:&lt;/h2&gt;
+    &lt;div&gt;
+        Nothing to see here!
+    &lt;/div&gt;
+&lt;/div&gt;</div></div></div></div></div>
+<br>
+<!-- 
+##### SOURCE BEGIN #####
+%% Using Lambdas and Partials
+%% Use Partials to Include Templates Within Templates
+% We can create a template |blog.mustache| for our blog that has a list of posts. 
+% If we want to reuse the template for a post in other parts of our site, we can 
+% store it in another template and use a partial.
+
+% Load a template
+template = fileread(fullfile("views", "blog.mustache"));
+
+disp(template);
+%% 
+% We can load the template |post.mustache| to display each post in our list 
+% of posts and include that in our blog template using a partial tag.
+
+% Load partials to a struct
+partials = struct("post", fileread(fullfile("views", "post.mustache")));
+
+disp(partials.post);
+%% 
+% We can load the data containing all posts for a given author. We can retrieve 
+% this from a database or another service. For this example, we will load the 
+% data from a json file.
+
+% Define a context
+jsonData = fileread(fullfile("data", "blog.json"));
+context = jsondecode(jsonData);
+disp(jsonData);
+%% 
+% Partials are rendered at runtime and inherit the calling context so we can 
+% use |name| from our context in both the blog template and the post template.
+
+% Render the template
+out = matstache.render(template, context, partials);
+disp(out);
+%% Use Lambdas to Dynamically Modify Templates
+% Variable lambdas
+% Section lambdas can be used to modify or replace content within sections.
+% 
+% Function handles with zero inputs can be used as a variable tag. It should 
+% return a Mustache template as a string scalar. The lambda will be evaluated, 
+% and the returned template will be rendered using the current context.
+
+% Using a lambda, we can transform name to make it bold everywhere
+context.rawName = context.name;
+context.name = @() "<b>{{rawName}}</b>";
+
+% Render the page
+out = matstache.render(template, context, partials);
+disp(out);
+% Section lambdas
+% Section lambdas can be used to modify or replace content within sections.
+% 
+% Function handles with *one input* can be used as a section tag. It should 
+% return a Mustache template as a string scalar. The lambda will be evaluated 
+% on the inner content of the section, and the returned template will be rendered 
+% using the current context.
+
+% Using a section lambda, we can wrap the section’s inner template (or replace it entirely).
+context.posts = @(inner) "        Nothing to see here!" + newline;
+
+% Render the page
+out = matstache.render(template, context, partials);
+disp(out);
+##### SOURCE END #####
+-->
+</div></body></html>

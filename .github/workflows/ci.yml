@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - uses: matlab-actions/setup-matlab@v3
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: matstache-toolbox
-          path: matstache.mltbx
+          path: release/matstache.mltbx
 
   integration-test:
     needs: build
@@ -32,7 +32,7 @@ jobs:
         # todo debug toolbox path on R2024b
         release: [R2023a, R2023b, R2024a, R2025a, R2025b, R2026a]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           submodules: true
           sparse-checkout: |
