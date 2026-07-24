@@ -8,10 +8,10 @@
 
 # Build tool folders
 .buildtool
-build
+release
 
 # Generated documentation
-toolbox/html/
+src/html/
 
 # Derived content-obscured files
 *.p
